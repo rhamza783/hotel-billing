@@ -26,46 +26,30 @@
             --bg-app: #E0E5EC;
             --text-primary: #4a5568;
             --text-secondary: #a0aec0;
-            
-            /* Shadows */
             --shadow-light: #ffffff;
             --shadow-dark: #a3b1c6;
-            
-            /* Colors */
-            --primary: #00897b; /* Teal */
+            --primary: #00897b;
             --danger: #e53935;
-            
             --nav-height: 70px;
             --radius: 15px;
         }
 
-        /* DARK MODE VARIABLES */
         body.dark-mode {
             --bg-app: #23272F;
             --text-primary: #E2E8F0;
             --text-secondary: #718096;
-            
             --shadow-light: #323741;
             --shadow-dark: #181b20;
-            
             --primary: #26a69a;
         }
 
-        * {
-            box-sizing: border-box;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
-        /* --- FONT APPLICATION --- */
         body, button, input, select, textarea, .btn-pop, .nav-item, h1, h2, h3, h4, p, span, div {
             font-family: 'Noto Nastaliq Urdu', serif !important;
         }
 
-        ::placeholder {
-            font-family: 'Noto Nastaliq Urdu', serif !important;
-            opacity: 0.7;
-        }
+        ::placeholder { font-family: 'Noto Nastaliq Urdu', serif !important; opacity: 0.7; }
 
         body {
             background-color: var(--bg-app);
@@ -76,118 +60,80 @@
             overflow-x: hidden;
         }
 
-        /* --- HEADER --- */
+        /* HEADER */
         header {
-            background: var(--bg-app); 
-            color: var(--text-primary); 
-            padding: 15px;
+            background: var(--bg-app); color: var(--text-primary); padding: 15px;
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 50;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
             margin-bottom: 10px;
         }
-        
-        .header-title {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: var(--primary);
-            text-shadow: 1px 1px 1px var(--bg-app);
-        }
-
+        .header-title { font-weight: bold; font-size: 1.1rem; color: var(--primary); text-shadow: 1px 1px 1px var(--bg-app); }
         .date-input {
-            background: var(--bg-app); 
-            border: none;
-            color: var(--text-primary); 
-            padding: 8px; border-radius: 10px; width: 130px;
-            font-size: 0.8rem; text-align: center;
+            background: var(--bg-app); border: none; color: var(--text-primary); 
+            padding: 8px; border-radius: 10px; width: 130px; font-size: 0.8rem; text-align: center;
             box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
         }
 
-        /* PAGES */
+        /* GENERAL STYLES */
         .page { display: none; padding: 15px; padding-bottom: 80px; animation: fadeIn 0.3s; }
         .page.active { display: block; }
 
-        /* Sub-Page */
         .sub-page {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-app); z-index: 150; padding: 15px; overflow-y: auto;
             animation: slideIn 0.3s ease;
         }
-        .sub-header {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
+        .sub-header { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .btn-back {
-            background: var(--bg-app); border: none; font-size: 1.2rem; 
-            color: var(--text-primary); cursor: pointer;
+            background: var(--bg-app); border: none; font-size: 1.2rem; color: var(--text-primary); cursor: pointer;
             width: 40px; height: 40px; border-radius: 50%;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
             display: flex; align-items: center; justify-content: center;
         }
-        .btn-back:active {
-            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
-        }
+        .btn-back:active { box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light); }
 
-        /* --- CARDS (NEUMORPHIC) --- */
         .card {
-            background: var(--bg-app); 
-            padding: 20px; border-radius: var(--radius);
+            background: var(--bg-app); padding: 20px; border-radius: var(--radius);
             margin-bottom: 20px; border: none;
             box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
         }
 
-        /* SETTINGS BUTTONS */
         .settings-btn {
             display: flex; justify-content: space-between; align-items: center;
             background: var(--bg-app); padding: 20px; border-radius: var(--radius);
-            margin-bottom: 15px; border: none; cursor: pointer;
-            color: var(--text-primary);
+            margin-bottom: 15px; border: none; cursor: pointer; color: var(--text-primary);
             box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
             transition: transform 0.1s;
         }
-        .settings-btn:active { 
-            transform: scale(0.98); 
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-        }
+        .settings-btn:active { transform: scale(0.98); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
         .settings-btn i { color: var(--primary); width: 30px; text-align: center; }
 
-        /* --- SHOP ITEMS --- */
+        /* SHOP */
         .categories { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
         .cat-chip {
-            background: var(--bg-app); border: none; padding: 8px 20px;
-            border-radius: 20px; white-space: nowrap; font-size: 0.9rem; cursor: pointer; 
-            color: var(--text-secondary); font-weight: bold;
+            background: var(--bg-app); border: none; padding: 8px 20px; border-radius: 20px; 
+            white-space: nowrap; font-size: 0.9rem; cursor: pointer; color: var(--text-secondary); font-weight: bold;
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
         }
-        .cat-chip.active { 
-            color: var(--primary);
-            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-        }
+        .cat-chip.active { color: var(--primary); box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
 
         .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 10px; }
         .item-card {
-            background: var(--bg-app); padding: 15px 5px; border-radius: var(--radius);
-            text-align: center; cursor: pointer; border: none;
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
-            transition: transform 0.1s;
+            background: var(--bg-app); padding: 15px 5px; border-radius: var(--radius); text-align: center; cursor: pointer; border: none;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); transition: transform 0.1s;
         }
-        .item-card:active { 
-            transform: scale(0.95); 
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-        }
+        .item-card:active { transform: scale(0.95); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
         .item-name { font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 5px; color: var(--text-primary); }
         .item-price { font-size: 0.85rem; color: var(--primary); font-weight: bold; }
 
-        /* --- INPUTS --- */
         .form-input {
-            width: 100%; padding: 15px; margin-bottom: 15px; border: none;
-            border-radius: 12px; font-size: 1rem; background: var(--bg-app); color: var(--text-primary);
+            width: 100%; padding: 15px; margin-bottom: 15px; border: none; border-radius: 12px; font-size: 1rem; 
+            background: var(--bg-app); color: var(--text-primary);
             box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
         }
-        .form-input:focus { color: var(--primary); }
 
-        /* --- BUTTONS --- */
+        /* BUTTONS */
         .btn-pop {
             flex: 1; padding: 15px; border: none; border-radius: 12px; font-size: 1rem;
             cursor: pointer; font-weight: bold; color: var(--text-primary) !important;
@@ -195,50 +141,43 @@
             box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
             transition: 0.1s;
         }
-        .btn-pop:active {
-            transform: scale(0.97);
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-        }
+        .btn-pop:active { transform: scale(0.97); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
         .btn-pop[onclick="printBill()"] { color: #0277bd !important; }
         .btn-pop[onclick="shareWhatsApp()"] { color: #25D366 !important; }
+        .btn-pop[onclick="shareBillPDF()"] { color: #e53935 !important; } /* Red for PDF */
         .btn-pop[onclick="saveAndNew()"] { color: var(--primary) !important; }
-        
-        /* --- DASHBOARD REPORTS --- */
+
+        /* REPORTS */
         .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .report-card { 
-            background: var(--bg-app); color: var(--text-primary); 
-            padding: 20px; border-radius: var(--radius); text-align: center; 
+            background: var(--bg-app); color: var(--text-primary); padding: 20px; border-radius: var(--radius); text-align: center; 
             box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
         }
         .report-val { font-size: 1.4rem; font-weight: bold; display: block; color: var(--primary); }
         .report-lbl { font-size: 0.85rem; opacity: 0.8; }
 
-        /* --- BILL PAPER --- */
+        /* BILL PAPER */
         .bill-paper {
             background: #fff; color: #000; padding: 15px; border-radius: 5px; margin-bottom: 25px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
-            border-top: 5px solid var(--primary);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primary);
         }
 
-        /* --- POPUPS --- */
+        /* POPUPS */
         .popup-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.1); backdrop-filter: blur(5px); z-index: 200; justify-content: center; align-items: center;
         }
         .popup-box {
-            background: var(--bg-app); padding: 30px; border-radius: 20px;
-            width: 85%; max-width: 350px; text-align: center; border: none;
-            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
-            animation: popUp 0.3s ease;
+            background: var(--bg-app); padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; border: none;
+            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light); animation: popUp 0.3s ease;
         }
         .popup-input {
-            width: 100%; padding: 15px; font-size: 1.3rem; text-align: center;
-            border: none; border-radius: 12px; outline: none;
+            width: 100%; padding: 15px; font-size: 1.3rem; text-align: center; border: none; border-radius: 12px; outline: none;
             background: var(--bg-app); color: var(--text-primary); font-weight: bold;
             box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
         }
 
-        /* --- BOTTOM NAV --- */
+        /* NAV */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
             background: var(--bg-app); display: flex; justify-content: space-around; align-items: center;
@@ -246,9 +185,7 @@
             box-shadow: 0 -5px 10px var(--shadow-light), 0 5px 10px var(--shadow-dark);
         }
         .nav-item { 
-            position: relative;
-            text-align: center; color: var(--text-secondary); 
-            font-size: 0.8rem; cursor: pointer; width: 33%;
+            position: relative; text-align: center; color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; width: 33%;
             padding: 10px; border-radius: 15px; transition: 0.2s;
         }
         .nav-item i { font-size: 1.4rem; margin-bottom: 4px; display: block; }
@@ -257,10 +194,8 @@
             box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
         }
         .badge {
-            position: absolute; top: 5px; left: 55%; 
-            background: var(--danger); color: white;
-            font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%;
-            display: none; align-items: center; justify-content: center;
+            position: absolute; top: 5px; left: 55%; background: var(--danger); color: white;
+            font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
         }
 
@@ -355,11 +290,15 @@
         </div>
     </div>
 
+    <!-- NEW ACTION BUTTONS -->
     <div class="action-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
         <button class="btn-pop" onclick="printBill()">پرنٹ</button>
-        <button class="btn-pop" onclick="shareWhatsApp()">WhatsApp</button>
-        <button class="btn-pop" style="grid-column:span 2;" onclick="saveAndNew()">نیا بل (Save & New)</button>
+        <button class="btn-pop" onclick="shareBillPDF()">PDF بھیجیں</button> <!-- NEW -->
+        <button class="btn-pop" onclick="shareWhatsApp()">WhatsApp Text</button>
+        <button class="btn-pop" style="grid-column:span 2; background:#333;" onclick="saveAndNew()">نیا بل (Save & New)</button>
     </div>
+    <!-- Spacing at bottom -->
+    <div style="height:20px;"></div>
 </div>
 
 <div id="page-settings" class="page">
@@ -374,7 +313,6 @@
         </div>
     </div>
 
-    <!-- PWA Install Button -->
     <div id="installBtn" onclick="installPWA()" class="settings-btn" style="display:none; color:var(--primary);">
         <div><i class="fas fa-download"></i> ایپ انسٹال کریں (Install App)</div>
         <i class="fas fa-chevron-left" style="font-size:0.9rem; color:var(--text-secondary);"></i>
@@ -405,7 +343,6 @@
     </div>
 </div>
 
-<!-- SUB-PAGE: PROFILE -->
 <div id="sub-profile" class="sub-page">
     <div class="sub-header">
         <button class="btn-back" onclick="closeSubPage('sub-profile')"><i class="fas fa-arrow-right"></i></button>
@@ -419,7 +356,6 @@
     </div>
 </div>
 
-<!-- SUB-PAGE: ITEMS -->
 <div id="sub-items" class="sub-page">
     <div class="sub-header">
         <button class="btn-back" onclick="closeSubPage('sub-items')"><i class="fas fa-arrow-right"></i></button>
@@ -438,7 +374,6 @@
     </div>
 </div>
 
-<!-- SUB-PAGE: HISTORY -->
 <div id="sub-history" class="sub-page">
     <div class="sub-header">
         <button class="btn-back" onclick="closeSubPage('sub-history')"><i class="fas fa-arrow-right"></i></button>
@@ -447,7 +382,6 @@
     <div id="historyList"></div>
 </div>
 
-<!-- SUB-PAGE: BACKUP -->
 <div id="sub-backup" class="sub-page">
     <div class="sub-header">
         <button class="btn-back" onclick="closeSubPage('sub-backup')"><i class="fas fa-arrow-right"></i></button>
@@ -460,7 +394,6 @@
     </div>
 </div>
 
-<!-- POPUPS -->
 <div class="popup-overlay" id="addPopup">
     <div class="popup-box">
         <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:15px;">Item</div>
@@ -492,50 +425,67 @@
 
 <nav class="bottom-nav">
     <div class="nav-item" onclick="switchPage('settings')"><i class="fas fa-cog"></i> سیٹنگز</div>
-    <div class="nav-item" onclick="switchPage('bill')">
-        <i class="fas fa-receipt"></i> بل 
-        <div class="badge" id="cartBadge">0</div>
-    </div>
+    <div class="nav-item" onclick="switchPage('bill')"><i class="fas fa-receipt"></i> بل <div class="badge" id="cartBadge">0</div></div>
     <div class="nav-item active" onclick="switchPage('shop')"><i class="fas fa-store"></i> دکان</div>
 </nav>
 
 <script>
-    // --- PWA LOGIC ---
+    // PWA & APP LOGIC
     let deferredPrompt;
-    
-    // Register Service Worker
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW Registered!', reg))
-                .catch(err => console.log('SW Failed!', err));
-        });
+        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(console.error); });
     }
-
-    // Capture Install Prompt
     window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        const btn = document.getElementById('installBtn');
-        if(btn) btn.style.display = 'flex'; // Show install button
+        e.preventDefault(); deferredPrompt = e;
+        const btn = document.getElementById('installBtn'); if(btn) btn.style.display = 'flex';
     });
-
     async function installPWA() {
         if (!deferredPrompt) return;
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
+        if(outcome === 'accepted') document.getElementById('installBtn').style.display = 'none';
         deferredPrompt = null;
-        if(outcome === 'accepted') {
-            document.getElementById('installBtn').style.display = 'none';
+    }
+
+    // PDF SHARING LOGIC
+    async function shareBillPDF() {
+        if(cart.length === 0) return alert("کارٹ خالی ہے!");
+        const element = document.getElementById('invoice-area');
+        const opt = {
+            margin: 5, filename: `Bill-${billId}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        try {
+            // Generate Blob
+            const pdfWorker = html2pdf().from(element).set(opt).output('blob');
+            const pdfBlob = await pdfWorker;
+            const file = new File([pdfBlob], `Bill-${billId}.pdf`, { type: 'application/pdf' });
+
+            // Share using Web Share API
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: `Bill #${billId}`,
+                    text: `ہوٹل بل: ${billId}`,
+                    files: [file]
+                });
+            } else {
+                // Fallback
+                html2pdf().from(element).set(opt).save();
+                alert("Sharing not supported in this browser. Downloading file instead.");
+            }
+        } catch (err) {
+            alert("Error: " + err.message);
         }
     }
 
-    // --- APP LOGIC ---
     const initialItems = [
         { id: 1, name: "چینی", cat: "کچن", price: 140, defQty: 1 },
         { id: 2, name: "آٹا", cat: "کچن", price: 1200, defQty: 1 },
         { id: 3, name: "دال چنا", cat: "دالیں", price: 250, defQty: 1 },
-        { id: 4, name: "ائل", cat: "کچن", price: 500, defQty: 1 },
+        { id: 4, name: "ائل", cat: "کچن", price: 500, defQty: 1 }
     ];
     let items = [], cart = [], activeCat = 'All', billId = 101;
     let tempItem = null, deleteIndex = -1;
@@ -549,18 +499,13 @@
         document.getElementById('billDate').valueAsDate = new Date();
         loadShopDetails();
         
-        // Dark Mode Check
         if(localStorage.getItem('darkMode') === 'true') {
             document.body.classList.add('dark-mode');
             const icon = document.getElementById('themeIcon');
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
+            icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
         }
 
-        renderShop();
-        renderHistory();
-        calculateReports();
-        updateUI();
+        renderShop(); renderHistory(); calculateReports(); updateUI();
     };
 
     function updateUI() {
@@ -569,13 +514,8 @@
         document.getElementById('printDate').innerText = document.getElementById('billDate').value;
     }
 
-    function openSubPage(id) {
-        document.getElementById(id).style.display = 'block';
-    }
-    function closeSubPage(id) {
-        document.getElementById(id).style.display = 'none';
-        if(id === 'sub-items') renderShop(); 
-    }
+    function openSubPage(id) { document.getElementById(id).style.display = 'block'; }
+    function closeSubPage(id) { document.getElementById(id).style.display = 'none'; if(id === 'sub-items') renderShop(); }
 
     function saveShopDetails() {
         const details = {
@@ -606,9 +546,7 @@
 
     function backupData() {
         const data = {};
-        for(let key in localStorage) {
-            if(key.startsWith('smart') || key === 'shopDetails') data[key] = localStorage.getItem(key);
-        }
+        for(let key in localStorage) { if(key.startsWith('smart') || key === 'shopDetails') data[key] = localStorage.getItem(key); }
         const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
@@ -617,8 +555,7 @@
     }
 
     function restoreData(input) {
-        const file = input.files[0];
-        if(!file) return;
+        const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
@@ -635,7 +572,6 @@
         const todayStr = new Date().toISOString().split('T')[0];
         const currentMonth = new Date().getMonth();
         let todayTotal = 0, monthTotal = 0;
-
         history.forEach(h => {
             let amount = parseFloat(h.netTotal.toString().replace(/,/g, ''));
             if(isNaN(amount)) amount = 0;
@@ -649,14 +585,8 @@
     function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
         const icon = document.getElementById('themeIcon');
-        
-        if (document.body.classList.contains('dark-mode')) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        }
+        if (document.body.classList.contains('dark-mode')) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); } 
+        else { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); }
         localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     }
 
@@ -682,8 +612,7 @@
     function setCat(c) { activeCat = c; renderShop(); }
     
     function openAddPopup(id) {
-        tempItem = items.find(i => i.id === id);
-        if(!tempItem) return;
+        tempItem = items.find(i => i.id === id); if(!tempItem) return;
         document.getElementById('popupItemName').innerText = tempItem.name;
         document.getElementById('popupPrice').value = tempItem.price;
         document.getElementById('popupQty').value = tempItem.defQty || 1;
@@ -841,4 +770,4 @@
     function printBill() { window.print(); }
 </script>
 </body>
-  </html>
+    </html>
