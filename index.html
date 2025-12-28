@@ -495,11 +495,68 @@
         }
     }
 
+    // UPDATED ITEM LIST (Categorized with Emojis)
     const initialItems = [
-        { id: 1, name: "چینی", cat: "کچن", price: 140, defQty: 1 },
-        { id: 2, name: "آٹا", cat: "کچن", price: 1200, defQty: 1 },
-        { id: 3, name: "دال چنا", cat: "دالیں", price: 250, defQty: 1 },
-        { id: 4, name: "ائل", cat: "کچن", price: 500, defQty: 1 }
+        // --- 1. Masalay (Spices) 🌶️ ---
+        { id: 101, name: "🌶️ زیرہ", cat: "مصالحہ جات", price: 50, defQty: 1 },
+        { id: 102, name: "🌶️ خشک دھنیا", cat: "مصالحہ جات", price: 40, defQty: 1 },
+        { id: 103, name: "🌶️ کالی مرچ", cat: "مصالحہ جات", price: 80, defQty: 1 },
+        { id: 104, name: "🌶️ سفید مرچ", cat: "مصالحہ جات", price: 90, defQty: 1 },
+        { id: 105, name: "🌶️ سبزی مصالحہ", cat: "مصالحہ جات", price: 30, defQty: 1 },
+        { id: 106, name: "🧂 چائنہ سالٹ", cat: "مصالحہ جات", price: 20, defQty: 1 },
+        { id: 107, name: "🧄 ادرک پاؤڈر", cat: "مصالحہ جات", price: 60, defQty: 1 },
+        { id: 108, name: "🧄 لہسن پاؤڈر", cat: "مصالحہ جات", price: 60, defQty: 1 },
+        { id: 109, name: "🌶️ کچری پاؤڈر", cat: "مصالحہ جات", price: 40, defQty: 1 },
+        { id: 110, name: "🌶️ درہ مرچ", cat: "مصالحہ جات", price: 50, defQty: 1 },
+        { id: 111, name: "🌶️ سرخ مرچ", cat: "مصالحہ جات", price: 100, defQty: 1 },
+        { id: 112, name: "🟡 ہلدی", cat: "مصالحہ جات", price: 40, defQty: 1 },
+        { id: 113, name: "🐟 مچھلی مصالحہ", cat: "مصالحہ جات", price: 50, defQty: 1 },
+        { id: 114, name: "🍖 تکہ مصالحہ", cat: "مصالحہ جات", price: 50, defQty: 1 },
+
+        // --- 2. Ration/Kitchen 🍚 ---
+        { id: 201, name: "🍚 دال چنا", cat: "راشن", price: 250, defQty: 1 },
+        { id: 202, name: "🍚 دال ماش", cat: "راشن", price: 300, defQty: 1 },
+        { id: 203, name: "🥣 چینی", cat: "راشن", price: 140, defQty: 1 },
+        { id: 204, name: "🌻 آئل", cat: "راشن", price: 500, defQty: 1 },
+        { id: 205, name: "🥣 گھی", cat: "راشن", price: 480, defQty: 1 },
+        { id: 206, name: "🍾 سرکہ", cat: "راشن", price: 80, defQty: 1 },
+        { id: 207, name: "☕ ردی (چائے)", cat: "راشن", price: 100, defQty: 1 },
+
+        // --- 3. Packing Materials 🛍️ ---
+        { id: 301, name: "📏 ٹیپ", cat: "پیکنگ", price: 50, defQty: 1 },
+        { id: 302, name: "📜 پرنٹنگ رول", cat: "پیکنگ", price: 100, defQty: 1 },
+        { id: 303, name: "🛍️ شاپر 7 انچ", cat: "پیکنگ", price: 200, defQty: 1 },
+        { id: 304, name: "🛍️ شاپر 6 انچ", cat: "پیکنگ", price: 180, defQty: 1 },
+        { id: 305, name: "🛍️ شاپر 8x11", cat: "پیکنگ", price: 250, defQty: 1 },
+        { id: 306, name: "🛍️ شاپر 10x13", cat: "پیکنگ", price: 300, defQty: 1 },
+        { id: 307, name: "🛍️ شاپر 12x15", cat: "پیکنگ", price: 350, defQty: 1 },
+        { id: 308, name: "🛍️ شاپر 15x18", cat: "پیکنگ", price: 400, defQty: 1 },
+        { id: 309, name: "🛍️ شاپر 18x21", cat: "پیکنگ", price: 450, defQty: 1 },
+        { id: 310, name: "📦 بریانی ڈبہ", cat: "پیکنگ", price: 15, defQty: 1 },
+        { id: 311, name: "📦 کباب ڈبہ", cat: "پیکنگ", price: 12, defQty: 1 },
+        { id: 312, name: "📦 مچھلی ڈبہ", cat: "پیکنگ", price: 20, defQty: 1 },
+        { id: 313, name: "🥡 رائتہ ڈبہ", cat: "پیکنگ", price: 5, defQty: 1 },
+        { id: 314, name: "🥘 1 پاؤ کڑاہی ڈبہ", cat: "پیکنگ", price: 18, defQty: 1 },
+        { id: 315, name: "🥘 آدھا کلو کڑاہی ڈبہ", cat: "پیکنگ", price: 25, defQty: 1 },
+        { id: 316, name: "🥘 3 پاؤ کڑاہی ڈبہ", cat: "پیکنگ", price: 30, defQty: 1 },
+        { id: 317, name: "🥘 1 کلو کڑاہی ڈبہ", cat: "پیکنگ", price: 35, defQty: 1 },
+
+        // --- 4. Cleaning 🧼 ---
+        { id: 401, name: "🧼 صابن", cat: "صفائی", price: 80, defQty: 1 },
+        { id: 402, name: "🧽 فوم / کوچی", cat: "صفائی", price: 30, defQty: 1 },
+        { id: 403, name: "🧼 برتن کریم", cat: "صفائی", price: 100, defQty: 1 },
+        { id: 404, name: "🧴 شیمپو", cat: "صفائی", price: 15, defQty: 1 },
+        { id: 405, name: "🧺 سرف", cat: "صفائی", price: 50, defQty: 1 },
+        { id: 406, name: "🧴 ہاتھ دھونے والا صابن", cat: "صفائی", price: 150, defQty: 1 },
+
+        // --- 5. Disposables/Misc 🥤 ---
+        { id: 501, name: "🧻 ٹشو", cat: "دیگر", price: 50, defQty: 1 },
+        { id: 502, name: "☕ چائے کپ", cat: "دیگر", price: 5, defQty: 1 },
+        { id: 503, name: "🥤 ڈسپوزیبل گلاس", cat: "دیگر", price: 3, defQty: 1 },
+        { id: 504, name: "🥢 دانت والی تیلی", cat: "دیگر", price: 20, defQty: 1 },
+        { id: 505, name: "🔥 ماچس", cat: "دیگر", price: 10, defQty: 1 },
+        { id: 506, name: "🔥 لائٹر", cat: "دیگر", price: 30, defQty: 1 },
+        { id: 507, name: "🌸 ایئر فریشنر", cat: "دیگر", price: 200, defQty: 1 }
     ];
     let items = [], cart = [], activeCat = 'All', billId = 101;
     let tempItem = null, deleteIndex = -1;
