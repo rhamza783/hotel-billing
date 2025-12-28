@@ -661,16 +661,29 @@
         localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     }
 
+// UPDATED: No "All" Button
     function renderShop() {
-        const cats = ['All', ...new Set(items.map(i => i.cat))];
+        // 1. Get unique categories only (Remove 'All')
+        const cats = [...new Set(items.map(i => i.cat))];
+
+        // 2. If currently on 'All', switch to the first available category automatically
+        if ((activeCat === 'All' || !cats.includes(activeCat)) && cats.length > 0) {
+            activeCat = cats[0];
+        }
+
         const dl = document.getElementById('dlCats'); dl.innerHTML = '';
         const catDiv = document.getElementById('catList'); catDiv.innerHTML = '';
+
+        // 3. Create Buttons
         cats.forEach(c => {
             catDiv.innerHTML += `<div class="cat-chip ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</div>`;
-            if(c !== 'All') dl.innerHTML += `<option value="${c}">`;
+            dl.innerHTML += `<option value="${c}">`;
         });
+
         const grid = document.getElementById('itemsGrid'); grid.innerHTML = '';
-        items.filter(i => activeCat === 'All' || i.cat === activeCat).forEach(i => {
+        
+        // 4. Filter Items (Strictly matching category)
+        items.filter(i => i.cat === activeCat).forEach(i => {
             grid.innerHTML += `
                 <div class="item-card" onclick="openAddPopup(${i.id})">
                     <span class="item-name">${i.name}</span>
@@ -679,7 +692,7 @@
             `;
         });
     }
-
+    
     function setCat(c) { activeCat = c; renderShop(); }
     
     function openAddPopup(id) {
