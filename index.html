@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ہوٹل بلنگ ایپ پرو</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#E0E5EC">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">
+
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Urdu Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* --- NEUMORPHIC THEME VARIABLES --- */
+            --bg-app: #E0E5EC;
+            --text-primary: #4a5568;
+            --text-secondary: #a0aec0;
+            
+            /* Shadows */
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            
+            /* Colors */
+            --primary: #00897b; /* Teal */
+            --danger: #e53935;
+            
+            --nav-height: 70px;
+            --radius: 15px;
+        }
+
+        /* DARK MODE VARIABLES */
+        body.dark-mode {
+            --bg-app: #23272F;
+            --text-primary: #E2E8F0;
+            --text-secondary: #718096;
+            
+            --shadow-light: #323741;
+            --shadow-dark: #181b20;
+            
+            --primary: #26a69a;
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- FONT APPLICATION --- */
+        body, button, input, select, textarea, .btn-pop, .nav-item, h1, h2, h3, h4, p, span, div {
+            font-family: 'Noto Nastaliq Urdu', serif !important;
+        }
+
+        ::placeholder {
+            font-family: 'Noto Nastaliq Urdu', serif !important;
+            opacity: 0.7;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            margin: 0; padding: 0;
+            padding-bottom: var(--nav-height);
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--bg-app); 
+            color: var(--text-primary); 
+            padding: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 50;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            margin-bottom: 10px;
+        }
+        
+        .header-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary);
+            text-shadow: 1px 1px 1px var(--bg-app);
+        }
+
+        .date-input {
+            background: var(--bg-app); 
+            border: none;
+            color: var(--text-primary); 
+            padding: 8px; border-radius: 10px; width: 130px;
+            font-size: 0.8rem; text-align: center;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+
+        /* PAGES */
+        .page { display: none; padding: 15px; padding-bottom: 80px; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+
+        /* Sub-Page */
+        .sub-page {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-app); z-index: 150; padding: 15px; overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+        .sub-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .btn-back {
+            background: var(--bg-app); border: none; font-size: 1.2rem; 
+            color: var(--text-primary); cursor: pointer;
+            width: 40px; height: 40px; border-radius: 50%;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-back:active {
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+        }
+
+        /* --- CARDS (NEUMORPHIC) --- */
+        .card {
+            background: var(--bg-app); 
+            padding: 20px; border-radius: var(--radius);
+            margin-bottom: 20px; border: none;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+        }
+
+        /* SETTINGS BUTTONS */
+        .settings-btn {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-app); padding: 20px; border-radius: var(--radius);
+            margin-bottom: 15px; border: none; cursor: pointer;
+            color: var(--text-primary);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            transition: transform 0.1s;
+        }
+        .settings-btn:active { 
+            transform: scale(0.98); 
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+        .settings-btn i { color: var(--primary); width: 30px; text-align: center; }
+
+        /* --- SHOP ITEMS --- */
+        .categories { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
+        .cat-chip {
+            background: var(--bg-app); border: none; padding: 8px 20px;
+            border-radius: 20px; white-space: nowrap; font-size: 0.9rem; cursor: pointer; 
+            color: var(--text-secondary); font-weight: bold;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+        }
+        .cat-chip.active { 
+            color: var(--primary);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 10px; }
+        .item-card {
+            background: var(--bg-app); padding: 15px 5px; border-radius: var(--radius);
+            text-align: center; cursor: pointer; border: none;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            transition: transform 0.1s;
+        }
+        .item-card:active { 
+            transform: scale(0.95); 
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+        .item-name { font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 5px; color: var(--text-primary); }
+        .item-price { font-size: 0.85rem; color: var(--primary); font-weight: bold; }
+
+        /* --- INPUTS --- */
+        .form-input {
+            width: 100%; padding: 15px; margin-bottom: 15px; border: none;
+            border-radius: 12px; font-size: 1rem; background: var(--bg-app); color: var(--text-primary);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+        .form-input:focus { color: var(--primary); }
+
+        /* --- BUTTONS --- */
+        .btn-pop {
+            flex: 1; padding: 15px; border: none; border-radius: 12px; font-size: 1rem;
+            cursor: pointer; font-weight: bold; color: var(--text-primary) !important;
+            background: var(--bg-app) !important;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            transition: 0.1s;
+        }
+        .btn-pop:active {
+            transform: scale(0.97);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+        .btn-pop[onclick="printBill()"] { color: #0277bd !important; }
+        .btn-pop[onclick="shareWhatsApp()"] { color: #25D366 !important; }
+        .btn-pop[onclick="saveAndNew()"] { color: var(--primary) !important; }
+        
+        /* --- DASHBOARD REPORTS --- */
+        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .report-card { 
+            background: var(--bg-app); color: var(--text-primary); 
+            padding: 20px; border-radius: var(--radius); text-align: center; 
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+        .report-val { font-size: 1.4rem; font-weight: bold; display: block; color: var(--primary); }
+        .report-lbl { font-size: 0.85rem; opacity: 0.8; }
+
+        /* --- BILL PAPER --- */
+        .bill-paper {
+            background: #fff; color: #000; padding: 15px; border-radius: 5px; margin-bottom: 25px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--primary);
+        }
+
+        /* --- POPUPS --- */
+        .popup-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1); backdrop-filter: blur(5px); z-index: 200; justify-content: center; align-items: center;
+        }
+        .popup-box {
+            background: var(--bg-app); padding: 30px; border-radius: 20px;
+            width: 85%; max-width: 350px; text-align: center; border: none;
+            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+            animation: popUp 0.3s ease;
+        }
+        .popup-input {
+            width: 100%; padding: 15px; font-size: 1.3rem; text-align: center;
+            border: none; border-radius: 12px; outline: none;
+            background: var(--bg-app); color: var(--text-primary); font-weight: bold;
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: var(--bg-app); display: flex; justify-content: space-around; align-items: center;
+            z-index: 100; border-top: none;
+            box-shadow: 0 -5px 10px var(--shadow-light), 0 5px 10px var(--shadow-dark);
+        }
+        .nav-item { 
+            position: relative;
+            text-align: center; color: var(--text-secondary); 
+            font-size: 0.8rem; cursor: pointer; width: 33%;
+            padding: 10px; border-radius: 15px; transition: 0.2s;
+        }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; display: block; }
+        .nav-item.active { 
+            color: var(--primary); font-weight: bold;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+        .badge {
+            position: absolute; top: 5px; left: 55%; 
+            background: var(--danger); color: white;
+            font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%;
+            display: none; align-items: center; justify-content: center;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        @media print {
+            body, .bill-paper { background: white !important; color: black !important; }
+            header, .bottom-nav, .items-grid, .categories, #page-settings, #page-shop, .action-btns, .extra-charges, .settings-btn, .sub-page { display: none !important; }
+            #page-bill { display: block !important; margin: 0; padding: 0; }
+            #invoice-area { border: none; width: 100%; position: absolute; top: 0; left: 0; box-shadow: none; }
+        }
+
+        @keyframes popUp { from{transform: scale(0.8); opacity: 0;} to{transform: scale(1); opacity: 1;} }
+        @keyframes fadeIn { from{opacity: 0;} to{opacity: 1;} }
+        @keyframes slideIn { from{transform: translateX(100%);} to{transform: translateX(0);} }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <div class="header-title">ہوٹل بلنگ پرو</div>
+        <div style="font-size:0.8rem; color:var(--text-secondary);">بل #: <span id="billId">101</span></div>
+    </div>
+    <div style="display:flex; gap:15px; align-items:center;">
+        <button onclick="toggleDarkMode()" style="background:transparent; border:none; color:var(--text-primary); font-size:1.2rem; cursor:pointer;">
+            <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <input type="date" id="billDate" class="date-input" onchange="updateDateDisplay()">
+    </div>
+</header>
+
+<div id="page-shop" class="page active">
+    <div class="categories" id="catList"></div>
+    <div class="items-grid" id="itemsGrid"></div>
+</div>
+
+<div id="page-bill" class="page">
+    <div class="card extra-charges" style="display:flex; gap:15px; padding:15px;">
+        <div style="flex:1">
+            <label style="font-size:0.8rem; margin-bottom:5px; display:block; color:var(--text-secondary);">ڈسکاؤنٹ (-)</label>
+            <input type="number" id="inpDiscount" class="form-input" placeholder="0" oninput="calculateTotals()" style="margin-bottom:0;">
+        </div>
+        <div style="flex:1">
+            <label style="font-size:0.8rem; margin-bottom:5px; display:block; color:var(--text-secondary);">ڈیلیوری (+)</label>
+            <input type="number" id="inpDelivery" class="form-input" placeholder="0" oninput="calculateTotals()" style="margin-bottom:0;">
+        </div>
+    </div>
+
+    <div id="invoice-area" class="bill-paper">
+        <div style="text-align:center; border-bottom:1px dashed #ccc; padding-bottom:10px; margin-bottom:10px;">
+            <h2 style="margin:0; color:var(--primary);" id="printShopName">دکان کا نام</h2>
+            <p style="margin:2px 0; font-size:0.9rem;" id="printTagline"></p>
+            <p style="margin:2px 0; font-size:0.8rem;" id="printContact"></p>
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-top:10px; border-top:1px solid #eee; padding-top:5px;">
+                <span>تاریخ: <span id="printDate"></span></span>
+                <span>بل #: <span id="printBillId"></span></span>
+            </div>
+        </div>
+
+        <table class="bill-table" style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+            <thead>
+                <tr style="border-bottom:2px solid #eee;">
+                    <th style="text-align:right; padding:5px;">آئٹم</th>
+                    <th style="padding:5px;">تعداد</th>
+                    <th style="padding:5px;">ریٹ</th>
+                    <th style="padding:5px;">ٹوٹل</th>
+                </tr>
+            </thead>
+            <tbody id="cartTableBody"></tbody>
+        </table>
+
+        <div style="margin-top:15px; padding-top:10px; border-top:1px solid #ccc;">
+            <div class="bill-summary-row" style="display:flex; justify-content:space-between; margin-top:5px;">
+                <span>سب ٹوٹل:</span>
+                <span id="subTotalDisplay">0</span>
+            </div>
+            <div class="bill-summary-row" id="rowDiscount" style="display:none; color:red; justify-content:space-between; margin-top:5px;">
+                <span>ڈسکاؤنٹ:</span>
+                <span>- <span id="discountDisplay">0</span></span>
+            </div>
+            <div class="bill-summary-row" id="rowDelivery" style="display:none; color:green; justify-content:space-between; margin-top:5px;">
+                <span>ڈیلیوری چارجز:</span>
+                <span>+ <span id="deliveryDisplay">0</span></span>
+            </div>
+            <div class="bill-total-row" style="display:flex; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:2px dashed #333; font-weight:bold; font-size:1.2rem;">
+                <span>نیٹ ٹوٹل:</span>
+                <span>Rs <span id="grandTotal">0</span></span>
+            </div>
+        </div>
+        <div style="text-align:center; font-size:0.8rem; margin-top:20px; color:#777;">
+            <p id="printAddress"></p>
+            خریداری کا شکریہ!
+        </div>
+    </div>
+
+    <div class="action-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+        <button class="btn-pop" onclick="printBill()">پرنٹ</button>
+        <button class="btn-pop" onclick="shareWhatsApp()">WhatsApp</button>
+        <button class="btn-pop" style="grid-column:span 2;" onclick="saveAndNew()">نیا بل (Save & New)</button>
+    </div>
+</div>
+
+<div id="page-settings" class="page">
+    <div class="report-grid">
+        <div class="report-card">
+            <span class="report-val" id="todaySale">0</span>
+            <span class="report-lbl">آج کی سیل</span>
+        </div>
+        <div class="report-card">
+            <span class="report-val" id="monthSale" style="color:#ff6f00;">0</span>
+            <span class="report-lbl">اس ماہ کی سیل</span>
+        </div>
+    </div>
+
+    <!-- PWA Install Button -->
+    <div id="installBtn" onclick="installPWA()" class="settings-btn" style="display:none; color:var(--primary);">
+        <div><i class="fas fa-download"></i> ایپ انسٹال کریں (Install App)</div>
+        <i class="fas fa-chevron-left" style="font-size:0.9rem; color:var(--text-secondary);"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-profile')" class="settings-btn">
+        <div><i class="fas fa-store"></i> دکان کی تفصیل (Profile)</div>
+        <i class="fas fa-chevron-left" style="font-size:0.9rem; color:var(--text-secondary);"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-items')" class="settings-btn">
+        <div><i class="fas fa-box-open"></i> آئٹم مینجمنٹ (Items)</div>
+        <i class="fas fa-chevron-left" style="font-size:0.9rem; color:var(--text-secondary);"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-history')" class="settings-btn">
+        <div><i class="fas fa-history"></i> پرانے بل (History)</div>
+        <i class="fas fa-chevron-left" style="font-size:0.9rem; color:var(--text-secondary);"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-backup')" class="settings-btn">
+        <div><i class="fas fa-save"></i> بیک اپ اور ریسٹور</div>
+        <i class="fas fa-chevron-left" style="font-size:0.9rem; color:var(--text-secondary);"></i>
+    </div>
+
+    <div onclick="resetAll()" class="settings-btn" style="color:red !important;">
+        <div style="color:red;"><i class="fas fa-trash" style="color:red;"></i> سارا ڈیٹا ڈیلیٹ کریں</div>
+    </div>
+</div>
+
+<!-- SUB-PAGE: PROFILE -->
+<div id="sub-profile" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-profile')"><i class="fas fa-arrow-right"></i></button>
+        <h3>دکان کی پروفائل</h3>
+    </div>
+    <div class="card">
+        <input type="text" id="shopName" class="form-input" placeholder="دکان کا نام" oninput="saveShopDetails()">
+        <input type="text" id="shopTagline" class="form-input" placeholder="ٹیگ لائن (Slogan)" oninput="saveShopDetails()">
+        <input type="text" id="shopPhone" class="form-input" placeholder="فون نمبر" oninput="saveShopDetails()">
+        <input type="text" id="shopAddress" class="form-input" placeholder="پتہ" oninput="saveShopDetails()">
+    </div>
+</div>
+
+<!-- SUB-PAGE: ITEMS -->
+<div id="sub-items" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-items')"><i class="fas fa-arrow-right"></i></button>
+        <h3>آئٹم مینجمنٹ</h3>
+    </div>
+    <div class="card">
+        <h4>نیا آئٹم</h4>
+        <input type="text" id="setName" class="form-input" placeholder="نام">
+        <input type="text" id="setCat" class="form-input" placeholder="کیٹیگری" list="dlCats">
+        <datalist id="dlCats"></datalist>
+        <div style="display:flex; gap:15px;">
+            <input type="number" id="setPrice" class="form-input" placeholder="قیمت">
+            <input type="number" id="setQty" class="form-input" placeholder="Qty" value="1">
+        </div>
+        <button class="btn-pop" style="width:100%; color:var(--primary) !important;" onclick="saveItem()">محفوظ کریں</button>
+    </div>
+</div>
+
+<!-- SUB-PAGE: HISTORY -->
+<div id="sub-history" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-history')"><i class="fas fa-arrow-right"></i></button>
+        <h3>بلنگ ہسٹری</h3>
+    </div>
+    <div id="historyList"></div>
+</div>
+
+<!-- SUB-PAGE: BACKUP -->
+<div id="sub-backup" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-backup')"><i class="fas fa-arrow-right"></i></button>
+        <h3>بیک اپ / ریسٹور</h3>
+    </div>
+    <div class="card">
+        <button class="btn-pop" style="width:100%; margin-bottom:15px;" onclick="backupData()">📥 ڈیٹا ڈاؤنلوڈ (Backup)</button>
+        <input type="file" id="restoreFile" style="display:none;" onchange="restoreData(this)">
+        <button class="btn-pop" style="width:100%;" onclick="document.getElementById('restoreFile').click()">📤 ڈیٹا واپس لائیں (Restore)</button>
+    </div>
+</div>
+
+<!-- POPUPS -->
+<div class="popup-overlay" id="addPopup">
+    <div class="popup-box">
+        <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:15px;">Item</div>
+        <div style="margin-bottom:15px; text-align:right;">
+            <label style="font-size:0.8rem; color:var(--text-secondary);">مقدار (Qty)</label>
+            <input type="number" id="popupQty" class="popup-input" onfocus="this.select()" inputmode="decimal">
+        </div>
+        <div style="margin-bottom:20px; text-align:right;">
+            <label style="font-size:0.8rem; color:var(--text-secondary);">قیمت (Price)</label>
+            <input type="number" id="popupPrice" class="popup-input" onfocus="this.select()" inputmode="decimal">
+        </div>
+        <div class="popup-btns" style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="closePopup()">کینسل</button>
+            <button class="btn-pop" style="color:var(--primary) !important;" onclick="confirmAddToCart()">شامل کریں</button>
+        </div>
+    </div>
+</div>
+
+<div class="popup-overlay" id="deletePopup">
+    <div class="popup-box">
+        <div class="popup-title" style="color:#e53935; font-weight:bold; margin-bottom:10px;">ہٹائیں؟</div>
+        <p id="deleteItemName" style="margin-bottom:20px;">کیا آپ واقعی اسے ہٹانا چاہتے ہیں؟</p>
+        <div class="popup-btns" style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="document.getElementById('deletePopup').style.display='none'">نہیں</button>
+            <button class="btn-pop" style="color:#e53935 !important;" onclick="confirmDelete()">ہاں</button>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item" onclick="switchPage('settings')"><i class="fas fa-cog"></i> سیٹنگز</div>
+    <div class="nav-item" onclick="switchPage('bill')">
+        <i class="fas fa-receipt"></i> بل 
+        <div class="badge" id="cartBadge">0</div>
+    </div>
+    <div class="nav-item active" onclick="switchPage('shop')"><i class="fas fa-store"></i> دکان</div>
+</nav>
+
+<script>
+    // --- PWA LOGIC ---
+    let deferredPrompt;
+    
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW Registered!', reg))
+                .catch(err => console.log('SW Failed!', err));
+        });
+    }
+
+    // Capture Install Prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const btn = document.getElementById('installBtn');
+        if(btn) btn.style.display = 'flex'; // Show install button
+    });
+
+    async function installPWA() {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if(outcome === 'accepted') {
+            document.getElementById('installBtn').style.display = 'none';
+        }
+    }
+
+    // --- APP LOGIC ---
+    const initialItems = [
+        { id: 1, name: "چینی", cat: "کچن", price: 140, defQty: 1 },
+        { id: 2, name: "آٹا", cat: "کچن", price: 1200, defQty: 1 },
+        { id: 3, name: "دال چنا", cat: "دالیں", price: 250, defQty: 1 },
+        { id: 4, name: "ائل", cat: "کچن", price: 500, defQty: 1 },
+    ];
+    let items = [], cart = [], activeCat = 'All', billId = 101;
+    let tempItem = null, deleteIndex = -1;
+
+    window.onload = function() {
+        items = JSON.parse(localStorage.getItem('smartItems')) || initialItems;
+        let globalId = localStorage.getItem('smartGlobalBillId');
+        billId = globalId ? parseInt(globalId) : 101;
+        if(!globalId) localStorage.setItem('smartGlobalBillId', billId);
+        
+        document.getElementById('billDate').valueAsDate = new Date();
+        loadShopDetails();
+        
+        // Dark Mode Check
+        if(localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            const icon = document.getElementById('themeIcon');
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+
+        renderShop();
+        renderHistory();
+        calculateReports();
+        updateUI();
+    };
+
+    function updateUI() {
+        document.getElementById('billId').innerText = billId;
+        document.getElementById('printBillId').innerText = billId;
+        document.getElementById('printDate').innerText = document.getElementById('billDate').value;
+    }
+
+    function openSubPage(id) {
+        document.getElementById(id).style.display = 'block';
+    }
+    function closeSubPage(id) {
+        document.getElementById(id).style.display = 'none';
+        if(id === 'sub-items') renderShop(); 
+    }
+
+    function saveShopDetails() {
+        const details = {
+            name: document.getElementById('shopName').value,
+            tagline: document.getElementById('shopTagline').value,
+            phone: document.getElementById('shopPhone').value,
+            address: document.getElementById('shopAddress').value
+        };
+        localStorage.setItem('shopDetails', JSON.stringify(details));
+        applyShopDetails(details);
+    }
+    
+    function loadShopDetails() {
+        const d = JSON.parse(localStorage.getItem('shopDetails')) || {name: "ہوٹل کا نام", tagline: "", phone: "", address: ""};
+        document.getElementById('shopName').value = d.name;
+        document.getElementById('shopTagline').value = d.tagline;
+        document.getElementById('shopPhone').value = d.phone;
+        document.getElementById('shopAddress').value = d.address;
+        applyShopDetails(d);
+    }
+    
+    function applyShopDetails(d) {
+        document.getElementById('printShopName').innerText = d.name || "ہوٹل کا نام";
+        document.getElementById('printTagline').innerText = d.tagline || "";
+        document.getElementById('printContact').innerText = d.phone || "";
+        document.getElementById('printAddress').innerText = d.address || "";
+    }
+
+    function backupData() {
+        const data = {};
+        for(let key in localStorage) {
+            if(key.startsWith('smart') || key === 'shopDetails') data[key] = localStorage.getItem(key);
+        }
+        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+    }
+
+    function restoreData(input) {
+        const file = input.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                for(let key in data) localStorage.setItem(key, data[key]);
+                alert("ڈیٹا بحال ہو گیا!"); location.reload();
+            } catch(err) { alert("غلط فائل!"); }
+        };
+        reader.readAsText(file);
+    }
+
+    function calculateReports() {
+        const history = JSON.parse(localStorage.getItem('smartHistory')) || [];
+        const todayStr = new Date().toISOString().split('T')[0];
+        const currentMonth = new Date().getMonth();
+        let todayTotal = 0, monthTotal = 0;
+
+        history.forEach(h => {
+            let amount = parseFloat(h.netTotal.toString().replace(/,/g, ''));
+            if(isNaN(amount)) amount = 0;
+            if(h.date === todayStr) todayTotal += amount;
+            if(new Date(h.date).getMonth() === currentMonth) monthTotal += amount;
+        });
+        document.getElementById('todaySale').innerText = todayTotal.toLocaleString();
+        document.getElementById('monthSale').innerText = monthTotal.toLocaleString();
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const icon = document.getElementById('themeIcon');
+        
+        if (document.body.classList.contains('dark-mode')) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    function renderShop() {
+        const cats = ['All', ...new Set(items.map(i => i.cat))];
+        const dl = document.getElementById('dlCats'); dl.innerHTML = '';
+        const catDiv = document.getElementById('catList'); catDiv.innerHTML = '';
+        cats.forEach(c => {
+            catDiv.innerHTML += `<div class="cat-chip ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</div>`;
+            if(c !== 'All') dl.innerHTML += `<option value="${c}">`;
+        });
+        const grid = document.getElementById('itemsGrid'); grid.innerHTML = '';
+        items.filter(i => activeCat === 'All' || i.cat === activeCat).forEach(i => {
+            grid.innerHTML += `
+                <div class="item-card" onclick="openAddPopup(${i.id})">
+                    <span class="item-name">${i.name}</span>
+                    <span class="item-price">Rs ${i.price}</span>
+                </div>
+            `;
+        });
+    }
+
+    function setCat(c) { activeCat = c; renderShop(); }
+    
+    function openAddPopup(id) {
+        tempItem = items.find(i => i.id === id);
+        if(!tempItem) return;
+        document.getElementById('popupItemName').innerText = tempItem.name;
+        document.getElementById('popupPrice').value = tempItem.price;
+        document.getElementById('popupQty').value = tempItem.defQty || 1;
+        document.getElementById('addPopup').style.display = 'flex';
+        setTimeout(() => { document.getElementById('popupQty').focus(); document.getElementById('popupQty').select(); }, 100);
+    }
+    function closePopup() { document.getElementById('addPopup').style.display = 'none'; tempItem = null; }
+    function confirmAddToCart() {
+        if(!tempItem) return;
+        const newPrice = parseFloat(document.getElementById('popupPrice').value);
+        const newQty = parseFloat(document.getElementById('popupQty').value);
+        if(isNaN(newPrice) || isNaN(newQty)) return;
+        const exists = cart.find(c => c.id === tempItem.id);
+        if(exists) { exists.price = newPrice; exists.qty = newQty; } 
+        else { cart.push({ id: tempItem.id, name: tempItem.name, price: newPrice, qty: newQty }); }
+        closePopup(); calculateTotals(); updateBadge();
+    }
+
+    function calculateTotals() {
+        const tbody = document.getElementById('cartTableBody'); tbody.innerHTML = '';
+        let subTotal = 0;
+        if(cart.length === 0) tbody.innerHTML = '<tr><td colspan="4" style="padding:15px; text-align:center;">کوئی آئٹم نہیں</td></tr>';
+        cart.forEach((c, idx) => {
+            let line = c.price * c.qty; subTotal += line;
+            tbody.innerHTML += `
+                <tr onclick="askDelete(${idx}, '${c.name}')">
+                    <td style="text-align:right; font-weight:bold;">${c.name}</td>
+                    <td>${c.qty}</td>
+                    <td>${c.price}</td>
+                    <td>${line.toLocaleString()}</td>
+                </tr>
+            `;
+        });
+        const discount = parseFloat(document.getElementById('inpDiscount').value) || 0;
+        const delivery = parseFloat(document.getElementById('inpDelivery').value) || 0;
+        const grandTotal = (subTotal - discount) + delivery;
+
+        document.getElementById('subTotalDisplay').innerText = subTotal.toLocaleString();
+        document.getElementById('rowDiscount').style.display = discount > 0 ? 'flex' : 'none';
+        document.getElementById('discountDisplay').innerText = discount.toLocaleString();
+        document.getElementById('rowDelivery').style.display = delivery > 0 ? 'flex' : 'none';
+        document.getElementById('deliveryDisplay').innerText = delivery.toLocaleString();
+        document.getElementById('grandTotal').innerText = grandTotal.toLocaleString();
+    }
+
+    function askDelete(idx, name) {
+        deleteIndex = idx;
+        document.getElementById('deleteItemName').innerText = `${name} ہٹانا ہے؟`;
+        document.getElementById('deletePopup').style.display = 'flex';
+    }
+    function confirmDelete() {
+        if(deleteIndex > -1) { cart.splice(deleteIndex, 1); calculateTotals(); updateBadge(); }
+        document.getElementById('deletePopup').style.display = 'none';
+    }
+
+    function autoSaveCurrentBill() {
+        if(cart.length === 0) return;
+        const history = JSON.parse(localStorage.getItem('smartHistory')) || [];
+        const currentID = parseInt(document.getElementById('billId').innerText);
+        const billObj = {
+            id: currentID,
+            date: document.getElementById('billDate').value,
+            netTotal: document.getElementById('grandTotal').innerText,
+            items: [...cart],
+            discount: document.getElementById('inpDiscount').value,
+            delivery: document.getElementById('inpDelivery').value
+        };
+        const existingIdx = history.findIndex(h => h.id === currentID);
+        if(existingIdx > -1) history[existingIdx] = billObj;
+        else {
+            history.unshift(billObj);
+            let globalId = parseInt(localStorage.getItem('smartGlobalBillId'));
+            if(currentID >= globalId) localStorage.setItem('smartGlobalBillId', currentID + 1);
+        }
+        localStorage.setItem('smartHistory', JSON.stringify(history));
+        calculateReports();
+    }
+
+    function renderHistory() {
+        const history = JSON.parse(localStorage.getItem('smartHistory')) || [];
+        const div = document.getElementById('historyList'); div.innerHTML = '';
+        const currentId = parseInt(document.getElementById('billId').innerText);
+        if(history.length === 0) { div.innerHTML = '<p style="text-align:center;">کوئی ریکارڈ نہیں</p>'; return; }
+        history.forEach((h, index) => {
+            const isActive = h.id === currentId ? 'box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); color:var(--primary);' : '';
+            div.innerHTML += `
+                <div class="card" style="display:flex; justify-content:space-between; padding:20px; cursor:pointer; ${isActive}" onclick="loadHistory(${index})">
+                    <div><b>Bill #${h.id}</b><br><small>${h.date}</small></div>
+                    <div style="font-weight:bold;">Rs ${h.netTotal}</div>
+                </div>
+            `;
+        });
+    }
+
+    function loadHistory(index) {
+        autoSaveCurrentBill();
+        const history = JSON.parse(localStorage.getItem('smartHistory'));
+        const rec = history[index];
+        cart = [...rec.items];
+        billId = rec.id;
+        document.getElementById('inpDiscount').value = rec.discount || "";
+        document.getElementById('inpDelivery').value = rec.delivery || "";
+        document.getElementById('billDate').value = rec.date;
+        updateUI(); calculateTotals(); updateBadge();
+        closeSubPage('sub-history'); 
+        switchPage('bill');
+    }
+
+    function saveAndNew() {
+        if(!cart.length) return;
+        autoSaveCurrentBill();
+        billId = parseInt(localStorage.getItem('smartGlobalBillId'));
+        cart = [];
+        document.getElementById('inpDiscount').value = "";
+        document.getElementById('inpDelivery').value = "";
+        document.getElementById('billDate').valueAsDate = new Date();
+        updateUI(); calculateTotals(); updateBadge(); renderHistory(); switchPage('shop');
+    }
+
+    function saveItem() {
+        const name = document.getElementById('setName').value;
+        const cat = document.getElementById('setCat').value;
+        const price = parseFloat(document.getElementById('setPrice').value);
+        if(!name) return;
+        items.push({ id: Date.now(), name, cat, price, defQty: 1 });
+        localStorage.setItem('smartItems', JSON.stringify(items));
+        alert("آئٹم محفوظ!"); renderShop(); closeSubPage('sub-items');
+    }
+
+    function resetAll() { if(confirm("سب ڈیٹا ختم ہو جائے گا!")) { localStorage.clear(); location.reload(); } }
+    
+    function switchPage(p) {
+        document.querySelectorAll('.page').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+        document.getElementById('page-'+p).classList.add('active');
+        const nav = document.querySelectorAll('.nav-item');
+        if(p==='settings') { nav[0].classList.add('active'); calculateReports(); }
+        if(p==='bill') { nav[1].classList.add('active'); calculateTotals(); }
+        if(p==='shop') nav[2].classList.add('active');
+    }
+
+    function updateBadge() {
+        const b = document.getElementById('cartBadge');
+        if(cart.length) { b.style.display = 'flex'; b.innerText = cart.length; } else b.style.display = 'none';
+    }
+
+    function shareWhatsApp() {
+        if(!cart.length) return;
+        let t = `*${document.getElementById('printShopName').innerText}*\n`;
+        t += `بل: ${billId} | تاریخ: ${document.getElementById('billDate').value}\n----------------\n`;
+        cart.forEach(c => t += `${c.name} (${c.qty}x${c.price})\n`);
+        t += `----------------\n*ٹوٹل: Rs ${document.getElementById('grandTotal').innerText}*`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
+    }
+    function printBill() { window.print(); }
+</script>
+</body>
+  </html>
