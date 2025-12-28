@@ -447,16 +447,29 @@
         deferredPrompt = null;
     }
 
-    // PDF SHARING LOGIC
+    // PDF SHARING LOGIC (FIXED)
     async function shareBillPDF() {
         if(cart.length === 0) return alert("کارٹ خالی ہے!");
+        
         const element = document.getElementById('invoice-area');
+        
+        // Options to fix blank page issue
         const opt = {
-            margin: 5, filename: `Bill-${billId}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin:       10,
+            filename:     `Bill-${billId}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+                scale: 2, 
+                useCORS: true,        // <--- THIS FIXES THE FONT ISSUE
+                letterRendering: true, 
+                scrollY: 0            // <--- THIS FIXES SCROLL CUTOFF
+            },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
+
+        // Show a "Please wait" message (Optional but good UX)
+        const oldText = event.target.innerText;
+        event.target.innerText = "Wait...";
 
         try {
             // Generate Blob
@@ -472,12 +485,13 @@
                     files: [file]
                 });
             } else {
-                // Fallback
+                // Fallback for computers or old phones
                 html2pdf().from(element).set(opt).save();
-                alert("Sharing not supported in this browser. Downloading file instead.");
             }
         } catch (err) {
             alert("Error: " + err.message);
+        } finally {
+            event.target.innerText = oldText; // Reset button text
         }
     }
 
