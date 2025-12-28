@@ -1,0 +1,21 @@
+{
+    "name": "Hotel Billing Pro",
+    "short_name": "BillingApp",
+    "description": "Professional Hotel Billing System",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#E0E5EC",
+    "theme_color": "#E0E5EC",
+    "icons": [
+      {
+        "src": "https://cdn-icons-png.flaticon.com/128/1046/1046784.png",
+        "sizes": "128x128",
+        "type": "image/png"
+      },
+      {
+        "src": "https://cdn-icons-png.flaticon.com/512/1046/1046784.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+}
