@@ -1,4 +1,4 @@
-const CACHE_NAME = 'billing-app-v2'; // Changed from v1 to v2
+const CACHE_NAME = 'billing-app-v3';
 const ASSETS = [
     './index.html',
     './manifest.json',
