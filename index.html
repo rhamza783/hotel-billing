@@ -164,9 +164,10 @@
 
         /* POPUPS */
         .popup-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.1); backdrop-filter: blur(5px); z-index: 200; justify-content: center; align-items: center;
-        }
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.1); backdrop-filter: blur(5px); z-index: 200; 
+    justify-content: center; align-items: center; /* <-- CHANGE THIS LINE */
+}
         .popup-box {
             background: var(--bg-app); padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; border: none;
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light); animation: popUp 0.3s ease;
@@ -412,13 +413,37 @@
     </div>
 </div>
 
-<div class="popup-overlay" id="deletePopup">
-    <div class="popup-box">
-        <div class="popup-title" style="color:#e53935; font-weight:bold; margin-bottom:10px;">ہٹائیں؟</div>
-        <p id="deleteItemName" style="margin-bottom:20px;">کیا آپ واقعی اسے ہٹانا چاہتے ہیں؟</p>
+<!-- UPDATED POPUP (Compact Layout) -->
+<div class="popup-overlay" id="addPopup">
+    <div class="popup-box" style="max-width: 320px; padding: 20px;">
+        
+        <!-- Item Name -->
+        <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:15px; color:var(--primary); font-size:1.2rem;">Item</div>
+        
+        <!-- Inputs in ONE ROW to save space -->
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            
+            <!-- Qty Input -->
+            <div style="flex:1;">
+                <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:5px;">مقدار (Qty)</label>
+                <input type="number" id="popupQty" class="popup-input" 
+                       onfocus="this.select()" inputmode="decimal" 
+                       onkeydown="if(event.key === 'Enter') confirmAddToCart()">
+            </div>
+
+            <!-- Price Input -->
+            <div style="flex:1;">
+                <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:5px;">قیمت (Price)</label>
+                <input type="number" id="popupPrice" class="popup-input" 
+                       onfocus="this.select()" inputmode="decimal" 
+                       onkeydown="if(event.key === 'Enter') confirmAddToCart()">
+            </div>
+        </div>
+
+        <!-- Buttons -->
         <div class="popup-btns" style="display:flex; gap:10px;">
-            <button class="btn-pop" onclick="document.getElementById('deletePopup').style.display='none'">نہیں</button>
-            <button class="btn-pop" style="color:#e53935 !important;" onclick="confirmDelete()">ہاں</button>
+            <button class="btn-pop" onclick="closePopup()" style="background:#eee; color:#333 !important;">کینسل</button>
+            <button class="btn-pop" onclick="confirmAddToCart()" style="background:var(--primary); color:white !important; box-shadow:none;">شامل کریں</button>
         </div>
     </div>
 </div>
