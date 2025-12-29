@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ہوٹل بلنگ ایپ پرو</title>
+    <title>Grocery Billing Pro</title>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -60,7 +60,7 @@
             overflow-x: hidden;
         }
 
-        /* HEADER 1*/
+        /* HEADER */
         header {
             background: var(--bg-app); color: var(--text-primary); padding: 15px;
             display: flex; justify-content: space-between; align-items: center;
@@ -144,7 +144,7 @@
         .btn-pop:active { transform: scale(0.97); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
         .btn-pop[onclick="printBill()"] { color: #0277bd !important; }
         .btn-pop[onclick="shareWhatsApp()"] { color: #25D366 !important; }
-        .btn-pop[onclick="shareBillPDF()"] { color: #e53935 !important; } /* Red for PDF */
+        .btn-pop[onclick="shareBillPDF()"] { color: #e53935 !important; } 
         .btn-pop[onclick="saveAndNew()"] { color: var(--primary) !important; }
 
         /* REPORTS */
@@ -162,33 +162,21 @@
             box-shadow: 5px 5px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primary);
         }
 
-        /* POPUPS */
-        /* POPUPS - FORCE TOP POSITION */
+        /* POPUPS - FIXED LAYOUT */
         .popup-overlay {
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: rgba(0,0,0,0.5); 
-            backdrop-filter: blur(3px); 
-            z-index: 200; 
-            
-            /* Align to TOP, not center */
-            align-items: flex-start; 
-            justify-content: center;
-            padding-top: 20px; /* 20px from the top of screen */
-            overflow-y: auto; /* Allow scrolling if screen is tiny */
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 200; 
+            /* FORCE TOP POSITION FOR KEYBOARD */
+            align-items: flex-start; justify-content: center; padding-top: 50px;
         }
         .popup-box {
-            background: var(--bg-app); padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; border: none;
+            background: var(--bg-app); padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; border: none;
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light); animation: popUp 0.3s ease;
         }
         .popup-input {
-            width: 100%; padding: 15px; font-size: 1.3rem; text-align: center; border: none; border-radius: 12px; outline: none;
+            width: 100%; padding: 12px; font-size: 1.1rem; text-align: center; border: none; border-radius: 10px; outline: none;
             background: var(--bg-app); color: var(--text-primary); font-weight: bold;
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
         }
 
         /* NAV */
@@ -241,6 +229,17 @@
 </header>
 
 <div id="page-shop" class="page active">
+    <!-- Search Bar -->
+    <div style="position:sticky; top:0; background:var(--bg-app); padding:10px 5px; z-index:40;">
+        <div style="position:relative;">
+            <i class="fas fa-search" style="position:absolute; right:15px; top:12px; color:var(--text-secondary);"></i>
+            <input type="text" id="searchInput" class="form-input" 
+                   placeholder="آئٹم تلاش کریں..." 
+                   style="margin-bottom:0; padding-right:40px;"
+                   oninput="filterItems()">
+        </div>
+    </div>
+    
     <div class="categories" id="catList"></div>
     <div class="items-grid" id="itemsGrid"></div>
 </div>
@@ -271,10 +270,10 @@
         <table class="bill-table" style="width:100%; border-collapse:collapse; font-size:0.9rem;">
             <thead>
                 <tr style="border-bottom:2px solid #eee;">
-                    <th style="text-align:right; padding:5px;">آئٹم</th>
-                    <th style="padding:5px;">تعداد</th>
-                    <th style="padding:5px;">ریٹ</th>
-                    <th style="padding:5px;">ٹوٹل</th>
+                    <th style="text-align:right; width:35%; padding:5px;">آئٹم</th>
+                    <th style="width:30%; padding:5px;">تعداد (Qty)</th>
+                    <th style="width:25%; padding:5px;">ٹوٹل</th>
+                    <th style="width:10%; padding:5px;"></th> <!-- Delete Icon Column -->
                 </tr>
             </thead>
             <tbody id="cartTableBody"></tbody>
@@ -304,14 +303,13 @@
         </div>
     </div>
 
-    <!-- NEW ACTION BUTTONS -->
+    <!-- ACTION BUTTONS -->
     <div class="action-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
         <button class="btn-pop" onclick="printBill()">پرنٹ</button>
-        <button class="btn-pop" onclick="shareBillPDF()">PDF بھیجیں</button> <!-- NEW -->
-        <button class="btn-pop" onclick="shareWhatsApp()">WhatsApp Text</button>
+        <button class="btn-pop" onclick="shareBillPDF()">PDF بھیجیں</button> 
+        <button class="btn-pop" onclick="shareWhatsApp()">WhatsApp</button>
         <button class="btn-pop" style="grid-column:span 2; background:#333;" onclick="saveAndNew()">نیا بل (Save & New)</button>
     </div>
-    <!-- Spacing at bottom -->
     <div style="height:20px;"></div>
 </div>
 
@@ -408,60 +406,38 @@
     </div>
 </div>
 
-
-<!-- UPDATED POPUP (Compact Layout) -->
+<!-- FIXED COMPACT POPUP -->
 <div class="popup-overlay" id="addPopup">
-    <div class="popup-box" style="max-width: 320px; padding: 20px;">
-        
-        <!-- Item Name -->
+    <div class="popup-box">
         <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:15px; color:var(--primary); font-size:1.2rem;">Item</div>
         
-        <!-- Inputs in ONE ROW to save space -->
-        <div style="display:flex; gap:10px; margin-bottom:20px;">
-            
-            <!-- Qty Inp<div class="popup-overlay" id="addPopup">
-    <div class="popup-box" style="margin-top: 10px;"> <!-- Margin top ensures it's not cut off -->
-        <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:10px; color:var(--primary);">Item</div>
-        
         <!-- SIDE BY SIDE INPUTS -->
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <div style="flex:1;">
-                <label style="font-size:0.8rem;">Qty</label>
-                <input type="number" id="popupQty" class="popup-input" onfocus="this.select()" inputmode="decimal">
-            </div>
-            <div style="flex:1;">
-                <label style="font-size:0.8rem;">Price</label>
-                <input type="number" id="popupPrice" class="popup-input" onfocus="this.select()" inputmode="decimal">
-            </div>
-        </div>
-
-        <div class="popup-btns" style="display:flex; gap:10px;">
-            <button class="btn-pop" onclick="closePopup()" style="background:#eee; color:black !important;">Cancel</button>
-            <button class="btn-pop" onclick="confirmAddToCart()" style="background:var(--primary); color:white !important;">Add</button>
-        </div>
-    </div>
-    </div>
-    
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
             <div style="flex:1;">
                 <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:5px;">مقدار (Qty)</label>
-                <input type="number" id="popupQty" class="popup-input" 
-                       onfocus="this.select()" inputmode="decimal" 
-                       onkeydown="if(event.key === 'Enter') confirmAddToCart()">
+                <input type="number" id="popupQty" class="popup-input" onfocus="this.select()" inputmode="decimal" onkeydown="if(event.key === 'Enter') confirmAddToCart()">
             </div>
-
-            <!-- Price Input -->
             <div style="flex:1;">
                 <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:5px;">قیمت (Price)</label>
-                <input type="number" id="popupPrice" class="popup-input" 
-                       onfocus="this.select()" inputmode="decimal" 
-                       onkeydown="if(event.key === 'Enter') confirmAddToCart()">
+                <input type="number" id="popupPrice" class="popup-input" onfocus="this.select()" inputmode="decimal" onkeydown="if(event.key === 'Enter') confirmAddToCart()">
             </div>
         </div>
 
-        <!-- Buttons -->
+        <!-- BUTTONS ROW -->
         <div class="popup-btns" style="display:flex; gap:10px;">
             <button class="btn-pop" onclick="closePopup()" style="background:#eee; color:#333 !important;">کینسل</button>
             <button class="btn-pop" onclick="confirmAddToCart()" style="background:var(--primary); color:white !important; box-shadow:none;">شامل کریں</button>
+        </div>
+    </div>
+</div>
+
+<div class="popup-overlay" id="deletePopup">
+    <div class="popup-box">
+        <div class="popup-title" style="color:#e53935; font-weight:bold; margin-bottom:10px;">ہٹائیں؟</div>
+        <p id="deleteItemName" style="margin-bottom:20px;">کیا آپ واقعی اسے ہٹانا چاہتے ہیں؟</p>
+        <div class="popup-btns" style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="document.getElementById('deletePopup').style.display='none'">نہیں</button>
+            <button class="btn-pop" style="color:#e53935 !important;" onclick="confirmDelete()">ہاں</button>
         </div>
     </div>
 </div>
@@ -490,55 +466,29 @@
         deferredPrompt = null;
     }
 
-    // PDF SHARING LOGIC (FIXED)
+    // PDF SHARING LOGIC (FIXED CORS)
     async function shareBillPDF() {
         if(cart.length === 0) return alert("کارٹ خالی ہے!");
-        
         const element = document.getElementById('invoice-area');
-        
-        // Options to fix blank page issue
         const opt = {
-            margin:       10,
-            filename:     `Bill-${billId}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { 
-                scale: 2, 
-                useCORS: true,        // <--- THIS FIXES THE FONT ISSUE
-                letterRendering: true, 
-                scrollY: 0            // <--- THIS FIXES SCROLL CUTOFF
-            },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin: 5, filename: `Bill-${billId}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-
-        // Show a "Please wait" message (Optional but good UX)
-        const oldText = event.target.innerText;
-        event.target.innerText = "Wait...";
-
+        const oldText = event.target.innerText; event.target.innerText = "Wait...";
         try {
-            // Generate Blob
             const pdfWorker = html2pdf().from(element).set(opt).output('blob');
             const pdfBlob = await pdfWorker;
             const file = new File([pdfBlob], `Bill-${billId}.pdf`, { type: 'application/pdf' });
-
-            // Share using Web Share API
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    title: `Bill #${billId}`,
-                    text: `ہوٹل بل: ${billId}`,
-                    files: [file]
-                });
-            } else {
-                // Fallback for computers or old phones
-                html2pdf().from(element).set(opt).save();
-            }
-        } catch (err) {
-            alert("Error: " + err.message);
-        } finally {
-            event.target.innerText = oldText; // Reset button text
-        }
+                await navigator.share({ title: `Bill #${billId}`, text: `ہوٹل بل: ${billId}`, files: [file] });
+            } else { html2pdf().from(element).set(opt).save(); }
+        } catch (err) { alert("Error: " + err.message); } 
+        finally { event.target.innerText = oldText; }
     }
 
-    // UPDATED ITEM LIST (Categorized with Emojis)
+    // ITEM LIST (GROCERY)
     const initialItems = [
         // --- 1. Masalay (Spices) 🌶️ ---
         { id: 101, name: "🌶️ زیرہ", cat: "مصالحہ جات", price: 50, defQty: 1 },
@@ -601,6 +551,7 @@
         { id: 506, name: "🔥 لائٹر", cat: "دیگر", price: 30, defQty: 1 },
         { id: 507, name: "🌸 ایئر فریشنر", cat: "دیگر", price: 200, defQty: 1 }
     ];
+
     let items = [], cart = [], activeCat = 'All', billId = 101;
     let tempItem = null, deleteIndex = -1;
 
@@ -704,28 +655,19 @@
         localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     }
 
-// UPDATED: No "All" Button
+    // UPDATED RENDER SHOP (No "All" Button, Auto-selects first cat)
     function renderShop() {
-        // 1. Get unique categories only (Remove 'All')
         const cats = [...new Set(items.map(i => i.cat))];
-
-        // 2. If currently on 'All', switch to the first available category automatically
-        if ((activeCat === 'All' || !cats.includes(activeCat)) && cats.length > 0) {
-            activeCat = cats[0];
-        }
+        if ((activeCat === 'All' || !cats.includes(activeCat)) && cats.length > 0) { activeCat = cats[0]; }
 
         const dl = document.getElementById('dlCats'); dl.innerHTML = '';
         const catDiv = document.getElementById('catList'); catDiv.innerHTML = '';
-
-        // 3. Create Buttons
         cats.forEach(c => {
             catDiv.innerHTML += `<div class="cat-chip ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</div>`;
             dl.innerHTML += `<option value="${c}">`;
         });
 
         const grid = document.getElementById('itemsGrid'); grid.innerHTML = '';
-        
-        // 4. Filter Items (Strictly matching category)
         items.filter(i => i.cat === activeCat).forEach(i => {
             grid.innerHTML += `
                 <div class="item-card" onclick="openAddPopup(${i.id})">
@@ -735,7 +677,30 @@
             `;
         });
     }
-    
+
+    // SEARCH FUNCTION
+    function filterItems() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const grid = document.getElementById('itemsGrid');
+        
+        if(!query) { renderShop(); return; }
+        grid.innerHTML = '';
+        const filtered = items.filter(i => i.name.toLowerCase().includes(query));
+        
+        if(filtered.length === 0) {
+            grid.innerHTML = '<p style="width:100%; grid-column:1/-1; text-align:center; opacity:0.6; padding:20px;">کوئی آئٹم نہیں ملا</p>';
+            return;
+        }
+        filtered.forEach(i => {
+            grid.innerHTML += `
+                <div class="item-card" onclick="openAddPopup(${i.id})">
+                    <span class="item-name">${i.name}</span>
+                    <span class="item-price">Rs ${i.price}</span>
+                </div>
+            `;
+        });
+    }
+
     function setCat(c) { activeCat = c; renderShop(); }
     
     function openAddPopup(id) {
@@ -747,6 +712,7 @@
         setTimeout(() => { document.getElementById('popupQty').focus(); document.getElementById('popupQty').select(); }, 100);
     }
     function closePopup() { document.getElementById('addPopup').style.display = 'none'; tempItem = null; }
+    
     function confirmAddToCart() {
         if(!tempItem) return;
         const newPrice = parseFloat(document.getElementById('popupPrice').value);
@@ -759,20 +725,35 @@
     }
 
     function calculateTotals() {
-        const tbody = document.getElementById('cartTableBody'); tbody.innerHTML = '';
+        const tbody = document.getElementById('cartTableBody'); 
+        tbody.innerHTML = '';
         let subTotal = 0;
-        if(cart.length === 0) tbody.innerHTML = '<tr><td colspan="4" style="padding:15px; text-align:center;">کوئی آئٹم نہیں</td></tr>';
+        
+        if(cart.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="padding:15px; text-align:center; opacity:0.5;">کوئی آئٹم نہیں (Empty)</td></tr>';
+        }
+
         cart.forEach((c, idx) => {
-            let line = c.price * c.qty; subTotal += line;
+            let line = c.price * c.qty; 
+            subTotal += line;
             tbody.innerHTML += `
-                <tr onclick="askDelete(${idx}, '${c.name}')">
-                    <td style="text-align:right; font-weight:bold;">${c.name}</td>
-                    <td>${c.qty}</td>
-                    <td>${c.price}</td>
-                    <td>${line.toLocaleString()}</td>
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="text-align:right; font-weight:bold; padding:8px 0;">${c.name} <div style="font-size:0.7rem; color:#777;">Rs ${c.price}</div></td>
+                    <td style="padding:5px;">
+                        <div style="display:flex; align-items:center; justify-content:center; gap:5px; background:#f0f0f0; border-radius:10px; padding:2px;">
+                            <button onclick="changeQty(${idx}, 1)" style="background:var(--primary); color:white; border:none; width:25px; height:25px; border-radius:50%; font-size:1rem; cursor:pointer;">+</button>
+                            <span style="font-weight:bold; min-width:20px; text-align:center;">${c.qty}</span>
+                            <button onclick="changeQty(${idx}, -1)" style="background:#ccc; color:black; border:none; width:25px; height:25px; border-radius:50%; font-size:1rem; cursor:pointer;">-</button>
+                        </div>
+                    </td>
+                    <td style="padding:5px; font-weight:bold;">${line.toLocaleString()}</td>
+                    <td style="padding:5px;">
+                         <i class="fas fa-trash" onclick="askDelete(${idx}, '${c.name}')" style="color:#e53935; cursor:pointer; font-size:1rem;"></i>
+                    </td>
                 </tr>
             `;
         });
+
         const discount = parseFloat(document.getElementById('inpDiscount').value) || 0;
         const delivery = parseFloat(document.getElementById('inpDelivery').value) || 0;
         const grandTotal = (subTotal - discount) + delivery;
@@ -783,6 +764,11 @@
         document.getElementById('rowDelivery').style.display = delivery > 0 ? 'flex' : 'none';
         document.getElementById('deliveryDisplay').innerText = delivery.toLocaleString();
         document.getElementById('grandTotal').innerText = grandTotal.toLocaleString();
+    }
+
+    function changeQty(idx, change) {
+        if(cart[idx].qty === 1 && change === -1) { askDelete(idx, cart[idx].name); return; }
+        cart[idx].qty += change; calculateTotals(); updateBadge();
     }
 
     function askDelete(idx, name) {
