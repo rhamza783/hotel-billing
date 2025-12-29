@@ -1,7 +1,7 @@
 {
-    "name": "Hotel Billing Pro",
-    "short_name": "BillingApp",
-    "description": "Professional Hotel Billing System",
+    "name": "Grocery Billing Pro",
+    "short_name": "GroceryApp",
+    "description": "Professional Grocery Billing System",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#E0E5EC",
