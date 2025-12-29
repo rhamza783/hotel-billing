@@ -163,11 +163,24 @@
         }
 
         /* POPUPS */
+        /* POPUPS - FORCE TOP POSITION */
         .popup-overlay {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.1); backdrop-filter: blur(5px); z-index: 200; 
-    justify-content: center; align-items: center; /* <-- CHANGE THIS LINE */
-}
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0,0,0,0.5); 
+            backdrop-filter: blur(3px); 
+            z-index: 200; 
+            
+            /* Align to TOP, not center */
+            align-items: flex-start; 
+            justify-content: center;
+            padding-top: 20px; /* 20px from the top of screen */
+            overflow-y: auto; /* Allow scrolling if screen is tiny */
+        }
         .popup-box {
             background: var(--bg-app); padding: 30px; border-radius: 20px; width: 85%; max-width: 350px; text-align: center; border: none;
             box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light); animation: popUp 0.3s ease;
@@ -395,23 +408,6 @@
     </div>
 </div>
 
-<div class="popup-overlay" id="addPopup">
-    <div class="popup-box">
-        <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:15px;">Item</div>
-        <div style="margin-bottom:15px; text-align:right;">
-            <label style="font-size:0.8rem; color:var(--text-secondary);">مقدار (Qty)</label>
-            <input type="number" id="popupQty" class="popup-input" onfocus="this.select()" inputmode="decimal">
-        </div>
-        <div style="margin-bottom:20px; text-align:right;">
-            <label style="font-size:0.8rem; color:var(--text-secondary);">قیمت (Price)</label>
-            <input type="number" id="popupPrice" class="popup-input" onfocus="this.select()" inputmode="decimal">
-        </div>
-        <div class="popup-btns" style="display:flex; gap:10px;">
-            <button class="btn-pop" onclick="closePopup()">کینسل</button>
-            <button class="btn-pop" style="color:var(--primary) !important;" onclick="confirmAddToCart()">شامل کریں</button>
-        </div>
-    </div>
-</div>
 
 <!-- UPDATED POPUP (Compact Layout) -->
 <div class="popup-overlay" id="addPopup">
@@ -423,7 +419,29 @@
         <!-- Inputs in ONE ROW to save space -->
         <div style="display:flex; gap:10px; margin-bottom:20px;">
             
-            <!-- Qty Input -->
+            <!-- Qty Inp<div class="popup-overlay" id="addPopup">
+    <div class="popup-box" style="margin-top: 10px;"> <!-- Margin top ensures it's not cut off -->
+        <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:10px; color:var(--primary);">Item</div>
+        
+        <!-- SIDE BY SIDE INPUTS -->
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <div style="flex:1;">
+                <label style="font-size:0.8rem;">Qty</label>
+                <input type="number" id="popupQty" class="popup-input" onfocus="this.select()" inputmode="decimal">
+            </div>
+            <div style="flex:1;">
+                <label style="font-size:0.8rem;">Price</label>
+                <input type="number" id="popupPrice" class="popup-input" onfocus="this.select()" inputmode="decimal">
+            </div>
+        </div>
+
+        <div class="popup-btns" style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="closePopup()" style="background:#eee; color:black !important;">Cancel</button>
+            <button class="btn-pop" onclick="confirmAddToCart()" style="background:var(--primary); color:white !important;">Add</button>
+        </div>
+    </div>
+    </div>
+    
             <div style="flex:1;">
                 <label style="font-size:0.8rem; color:var(--text-secondary); display:block; margin-bottom:5px;">مقدار (Qty)</label>
                 <input type="number" id="popupQty" class="popup-input" 
