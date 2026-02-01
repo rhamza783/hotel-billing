@@ -5,190 +5,1022 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Grocery Billing Pro</title>
     
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#E0E5EC">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">
 
     <!-- PDF Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Urdu Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* --- NEUMORPHIC THEME VARIABLES --- */
             --bg-app: #E0E5EC;
-            --text-primary: #4a5568;
-            --text-secondary: #a0aec0;
+            --text-primary: #3d4655;
+            --text-secondary: #8490a1;
             --shadow-light: #ffffff;
             --shadow-dark: #a3b1c6;
             --primary: #00897b;
             --danger: #e53935;
             --nav-height: 70px;
-            --radius: 15px;
+            --radius: 16px;
         }
 
         body.dark-mode {
             --bg-app: #23272F;
             --text-primary: #E2E8F0;
-            --text-secondary: #718096;
-            --shadow-light: #323741;
-            --shadow-dark: #181b20;
-            --primary: #26a69a;
+            --text-secondary: #8b9bb4;
+            --shadow-light: #2c313a;
+            --shadow-dark: #1a1d23;
+            --primary: #4db6ac;
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
-        body, button, input, select, textarea, .btn-pop, .nav-item, h1, h2, h3, h4, p, span, div {
-            font-family: 'Noto Nastaliq Urdu', serif !important;
-        }
-
-        ::placeholder { font-family: 'Noto Nastaliq Urdu', serif !important; opacity: 0.7; }
-
         body {
+            font-family: 'Noto Nastaliq Urdu', serif;
             background-color: var(--bg-app);
             color: var(--text-primary);
             margin: 0; padding: 0;
-            padding-bottom: var(--nav-height);
-            transition: background 0.3s, color 0.3s;
+            padding-bottom: calc(var(--nav-height) + 20px);
             overflow-x: hidden;
+            overscroll-behavior-y: contain;
         }
+
+        button, input, select, textarea { font-family: inherit; }
 
         /* HEADER */
         header {
-            background: var(--bg-app); color: var(--text-primary); padding: 15px;
+            background: var(--bg-app); padding: 15px;
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 50;
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            box-shadow: 3px 3px 10px var(--shadow-dark), -3px -3px 10px var(--shadow-light);
             margin-bottom: 10px;
         }
-        .header-title { font-weight: bold; font-size: 1.1rem; color: var(--primary); text-shadow: 1px 1px 1px var(--bg-app); }
+        .header-title { font-weight: bold; font-size: 1.1rem; color: var(--primary); }
         .date-input {
             background: var(--bg-app); border: none; color: var(--text-primary); 
-            padding: 8px; border-radius: 10px; width: 130px; font-size: 0.8rem; text-align: center;
-            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            padding: 8px; border-radius: 10px; width: 135px; font-size: 0.8rem; text-align: center;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+            font-family: sans-serif !important;
+            font-weight: bold;
         }
 
-        /* GENERAL STYLES */
-        .page { display: none; padding: 15px; padding-bottom: 80px; animation: fadeIn 0.3s; }
+        /* PAGES */
+        .page { display: none; padding: 15px; animation: fadeIn 0.2s ease-out; }
         .page.active { display: block; }
 
         .sub-page {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-app); z-index: 150; padding: 15px; overflow-y: auto;
-            animation: slideIn 0.3s ease;
+            animation: slideIn 0.25s ease-out;
         }
-        .sub-header { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        
+        .sub-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .btn-back {
-            background: var(--bg-app); border: none; font-size: 1.2rem; color: var(--text-primary); cursor: pointer;
+            background: var(--bg-app); border: none; font-size: 1.1rem; color: var(--text-primary);
             width: 40px; height: 40px; border-radius: 50%;
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
             display: flex; align-items: center; justify-content: center;
         }
-        .btn-back:active { box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light); }
 
+        /* CARDS & BUTTONS */
         .card {
             background: var(--bg-app); padding: 20px; border-radius: var(--radius);
-            margin-bottom: 20px; border: none;
-            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            margin-bottom: 20px;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
         }
 
         .settings-btn {
             display: flex; justify-content: space-between; align-items: center;
-            background: var(--bg-app); padding: 20px; border-radius: var(--radius);
-            margin-bottom: 15px; border: none; cursor: pointer; color: var(--text-primary);
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
-            transition: transform 0.1s;
-        }
-        .settings-btn:active { transform: scale(0.98); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
-        .settings-btn i { color: var(--primary); width: 30px; text-align: center; }
-
-        /* SHOP */
-        .categories { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
-        .cat-chip {
-            background: var(--bg-app); border: none; padding: 8px 20px; border-radius: 20px; 
-            white-space: nowrap; font-size: 0.9rem; cursor: pointer; color: var(--text-secondary); font-weight: bold;
+            background: var(--bg-app); padding: 18px; border-radius: var(--radius);
+            margin-bottom: 15px; cursor: pointer; color: var(--text-primary);
             box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
         }
-        .cat-chip.active { color: var(--primary); box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+        .settings-btn:active, .btn-pop:active { transform: scale(0.98); box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
 
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 10px; }
-        .item-card {
-            background: var(--bg-app); padding: 15px 5px; border-radius: var(--radius); text-align: center; cursor: pointer; border: none;
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light); transition: transform 0.1s;
+        /* SHOP LAYOUT */
+        .categories { 
+            display: flex; gap: 10px; overflow-x: auto; padding: 5px 5px 15px 5px; 
+            -webkit-overflow-scrolling: touch; scrollbar-width: none; 
         }
-        .item-card:active { transform: scale(0.95); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
-        .item-name { font-weight: bold; font-size: 0.95rem; display: block; margin-bottom: 5px; color: var(--text-primary); }
-        .item-price { font-size: 0.85rem; color: var(--primary); font-weight: bold; }
+        .categories::-webkit-scrollbar { display: none; }
+        
+        .cat-chip {
+            background: var(--bg-app); padding: 8px 18px; border-radius: 50px; 
+            white-space: nowrap; font-size: 0.85rem; font-weight: bold; color: var(--text-secondary);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            transition: all 0.2s;
+        }
+        .cat-chip.active { 
+            color: var(--primary); 
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light); 
+        }
+
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 12px; margin-top: 5px; }
+        .item-card {
+            background: var(--bg-app); padding: 12px 5px; border-radius: var(--radius); text-align: center; 
+            cursor: pointer; user-select: none;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+        }
+        .item-card:active { transform: scale(0.96); }
+        .item-name { font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 4px; line-height: 1.3; }
+        .item-price { font-size: 0.8rem; color: var(--primary); font-weight: bold; }
 
         .form-input {
-            width: 100%; padding: 15px; margin-bottom: 15px; border: none; border-radius: 12px; font-size: 1rem; 
+            width: 100%; padding: 14px; margin-bottom: 15px; border: none; border-radius: 12px; font-size: 1rem; 
             background: var(--bg-app); color: var(--text-primary);
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            transition: box-shadow 0.2s;
         }
+        .form-input:focus { box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light); }
 
-        /* BUTTONS */
         .btn-pop {
-            flex: 1; padding: 15px; border: none; border-radius: 12px; font-size: 1rem;
-            cursor: pointer; font-weight: bold; color: var(--text-primary) !important;
-            background: var(--bg-app) !important;
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
-            transition: 0.1s;
+            width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 1rem;
+            cursor: pointer; font-weight: bold; color: var(--text-primary); background: var(--bg-app);
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
         }
-        .btn-pop:active { transform: scale(0.97); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
-        .btn-pop[onclick="printBill()"] { color: #0277bd !important; }
-        .btn-pop[onclick="shareWhatsApp()"] { color: #25D366 !important; }
-        .btn-pop[onclick="shareBillPDF()"] { color: #e53935 !important; } 
-        .btn-pop[onclick="saveAndNew()"] { color: var(--primary) !important; }
 
-        /* REPORTS */
-        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .report-card { 
-            background: var(--bg-app); color: var(--text-primary); padding: 20px; border-radius: var(--radius); text-align: center; 
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        /* --- MODERN FILE UPLOAD --- */
+        .file-upload-wrapper { position: relative; width: 100%; margin-bottom: 15px; }
+        .file-upload-box {
+            border: 2px dashed var(--shadow-dark); background: var(--bg-app); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--text-secondary);
         }
-        .report-val { font-size: 1.4rem; font-weight: bold; display: block; color: var(--primary); }
-        .report-lbl { font-size: 0.85rem; opacity: 0.8; }
+        .file-upload-box:active { transform: scale(0.98); box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+        .file-upload-wrapper input[type=file] { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .preview-img { max-width: 100px; max-height: 100px; margin-top: 10px; border-radius: 10px; box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light); object-fit: contain; display: none; }
+
+        /* --- DROPDOWNS --- */
+        .custom-dropdown { display: none; position: absolute; left: 0; width: 100%; background: #fff; border-radius: 12px; z-index: 1000; max-height: 220px; overflow-y: auto; border: 1px solid rgba(0,0,0,0.05); }
+        .dropdown-up { bottom: 100%; margin-bottom: 10px; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); animation: slideUp 0.2s ease-out; }
+        .dropdown-down { top: 100%; margin-top: 5px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); animation: slideDown 0.2s ease-out; }
+        .dropdown-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; color: #4a5568; font-size: 0.95rem; }
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background: #e0f2f1; color: var(--primary); padding-right: 20px; transition: 0.2s; }
+        .dropdown-item span { width: 25px; text-align: center; font-size: 1.1rem; }
+        
+        @keyframes slideUp { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+        @keyframes slideDown { from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
+
+        body.dark-mode .custom-dropdown { background: #2d3748; border-color: #444; }
+        body.dark-mode .dropdown-item { color: #e2e8f0; border-bottom: 1px solid #4a5568; }
+        body.dark-mode .dropdown-item:hover { background: #4a5568; color: var(--primary); }
 
         /* BILL PAPER */
-        .bill-paper {
-            background: #fff; color: #000; padding: 15px; border-radius: 5px; margin-bottom: 25px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.1); border-top: 5px solid var(--primary);
+        .bill-paper { background: #fff; color: #000; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); border-top: 6px solid var(--primary); position: relative; }
+        .bill-logo { max-width: 80px; max-height: 80px; margin: 0 auto 10px auto; display: block; border-radius: 5px; object-fit: contain; }
+
+        /* POPUPS */
+        .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 200; align-items: center; justify-content: center; }
+        .popup-box { background: var(--bg-app); padding: 25px; border-radius: 20px; width: 85%; max-width: 320px; text-align: center; animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: visible !important; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height); background: var(--bg-app); display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 -5px 10px -5px rgba(0,0,0,0.1); }
+        .nav-item { position: relative; text-align: center; color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; width: 33%; padding: 8px; border-radius: 12px; transition: 0.2s; }
+        .nav-item i { font-size: 1.3rem; margin-bottom: 5px; display: block; }
+        .nav-item.active { color: var(--primary); font-weight: bold; box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+        .badge { position: absolute; top: 4px; left: 52%; background: var(--danger); color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; display: none; box-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+
+        @media print {
+            body { background: white; color: black; padding: 0; margin: 0; }
+            header, .bottom-nav, .items-grid, .categories, #page-settings, #page-shop, .action-btns, .extra-charges, .settings-btn, .sub-page, .popup-overlay, #searchInput { display: none !important; }
+            #page-bill { display: block !important; margin: 0; padding: 0; width: 100%; }
+            #invoice-area { box-shadow: none; border: none; margin: 0; padding: 0; width: 100%; }
+            #invoice-area { page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
         }
 
-        /* POPUPS - FIXED LAYOUT */
-        .popup-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 200; 
-            /* FORCE TOP POSITION FOR KEYBOARD */
-            align-items: flex-start; justify-content: center; padding-top: 50px;
-        }
-        .popup-box {
-            background: var(--bg-app); padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; border: none;
-            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light); animation: popUp 0.3s ease;
-        }
-        .popup-input {
-            width: 100%; padding: 12px; font-size: 1.1rem; text-align: center; border: none; border-radius: 10px; outline: none;
-            background: var(--bg-app); color: var(--text-primary); font-weight: bold;
-            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-        }
+        @keyframes popUp { from{transform: scale(0.9); opacity: 0;} to{transform: scale(1); opacity: 1;} }
+        @keyframes fadeIn { from{opacity: 0;} to{opacity: 1;} }
+        @keyframes slideIn { from{transform: translateX(100%);} to{transform: translateX(0);} }
+    </style>
+</head>
+<body>
 
-        /* NAV */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
-            background: var(--bg-app); display: flex; justify-content: space-around; align-items: center;
-            z-index: 100; border-top: none;
-            box-shadow: 0 -5px 10px var(--shadow-light), 0 5px 10px var(--shadow-dark);
+<header>
+    <div>
+        <div class="header-title">ہوٹل بلنگ پرو</div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">بل نمبر: <span id="billId" style="font-family:sans-serif; font-weight:bold;">101</span></div>
+    </div>
+    <div style="display:flex; gap:12px; align-items:center;">
+        <button onclick="cycleTheme()" style="background:transparent; border:none; color:var(--text-primary); font-size:1.1rem; cursor:pointer; padding:5px; width:30px;">
+            <i class="fas fa-sun" id="themeIcon"></i>
+        </button>
+        <input type="date" id="billDate" class="date-input" onchange="updateDateDisplay()">
+    </div>
+</header>
+
+<!-- PAGE SHOP -->
+<div id="page-shop" class="page active">
+    <div style="position:sticky; top:0; background:var(--bg-app); padding:5px 0 10px 0; z-index:40;">
+        <div style="position:relative;">
+            <i class="fas fa-search" style="position:absolute; right:15px; top:14px; color:var(--text-secondary); pointer-events:none;"></i>
+            <input type="text" id="searchInput" class="form-input" 
+                   placeholder="آئٹم تلاش کریں..." 
+                   style="margin-bottom:0; padding-right:45px;"
+                   oninput="filterItems()">
+            <i class="fas fa-times" id="clearSearchBtn" onclick="clearSearch()" 
+               style="position:absolute; left:15px; top:14px; color:var(--text-secondary); cursor:pointer; display:none;"></i>
+        </div>
+    </div>
+    
+    <div class="categories" id="catList"></div>
+    <div class="items-grid" id="itemsGrid"></div>
+</div>
+
+<!-- PAGE BILL -->
+<div id="page-bill" class="page">
+    <div class="card extra-charges" style="display:flex; gap:15px; padding:15px;">
+        <div style="flex:1">
+            <label style="font-size:0.75rem; margin-bottom:5px; display:block; color:var(--text-secondary);">ڈسکاؤنٹ (-)</label>
+            <input type="number" id="inpDiscount" class="form-input" placeholder="0" inputmode="decimal" oninput="calculateTotals()" style="margin-bottom:0; text-align:center;">
+        </div>
+        <div style="flex:1">
+            <label style="font-size:0.75rem; margin-bottom:5px; display:block; color:var(--text-secondary);">ڈیلیوری (+)</label>
+            <input type="number" id="inpDelivery" class="form-input" placeholder="0" inputmode="decimal" oninput="calculateTotals()" style="margin-bottom:0; text-align:center;">
+        </div>
+    </div>
+
+    <div id="invoice-area" class="bill-paper">
+        <div style="text-align:center; border-bottom:1px dashed #ccc; padding-bottom:15px; margin-bottom:15px;">
+            <img id="billLogo" class="bill-logo" src="" style="display:none;" alt="Logo">
+            <h2 style="margin:0; color:var(--primary); font-size:1.4rem;" id="printShopName">دکان کا نام</h2>
+            <p style="margin:4px 0; font-size:0.85rem; color:#555;" id="printTagline"></p>
+            <p style="margin:2px 0; font-size:0.85rem; font-family:sans-serif;" id="printContact"></p>
+            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-top:12px; border-top:1px solid #eee; padding-top:8px;">
+                <span>تاریخ: <span id="printDate" style="font-family:sans-serif;"></span></span>
+                <span>بل #: <span id="printBillId" style="font-family:sans-serif;"></span></span>
+            </div>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+            <thead>
+                <tr style="border-bottom:2px solid #eee; color:#555;">
+                    <th style="text-align:right; width:40%; padding:8px 2px;">آئٹم</th>
+                    <th style="width:25%; padding:8px 2px; text-align:center;">تعداد</th>
+                    <th style="width:25%; padding:8px 2px; text-align:right;">ٹوٹل</th>
+                    <th style="width:10%;"></th>
+                </tr>
+            </thead>
+            <tbody id="cartTableBody"></tbody>
+        </table>
+
+        <div style="margin-top:20px; padding-top:10px; border-top:1px solid #ccc;">
+            <div class="bill-summary-row" style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span>سب ٹوٹل:</span>
+                <span style="font-family:sans-serif;" id="subTotalDisplay">0</span>
+            </div>
+            <div id="rowDiscount" style="display:none; color:var(--danger); justify-content:space-between; margin-bottom:5px;">
+                <span>ڈسکاؤنٹ:</span>
+                <span style="font-family:sans-serif;">- <span id="discountDisplay">0</span></span>
+            </div>
+            <div id="rowDelivery" style="display:none; color:var(--primary); justify-content:space-between; margin-bottom:5px;">
+                <span>ڈیلیوری:</span>
+                <span style="font-family:sans-serif;">+ <span id="deliveryDisplay">0</span></span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:2px dashed #333; font-weight:bold; font-size:1.3rem;">
+                <span>نیٹ ٹوٹل:</span>
+                <span style="font-family:sans-serif;">Rs <span id="grandTotal">0</span></span>
+            </div>
+        </div>
+        <div style="text-align:center; font-size:0.8rem; margin-top:25px; color:#777;">
+            <p id="printAddress" style="margin-bottom:5px;"></p>
+            !! خریداری کا شکریہ !!
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="action-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+        <button class="btn-pop" onclick="printBill()" style="color:#0277bd;">
+            <i class="fas fa-print"></i> پرنٹ
+        </button>
+        <button class="btn-pop" onclick="shareBillPDF()" style="color:#e53935;">
+            <i class="fas fa-file-pdf"></i> PDF
+        </button> 
+        <button class="btn-pop" onclick="shareWhatsApp()" style="color:#25D366;">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </button>
+        <button class="btn-pop" style="grid-column:span 2; background:#37474f; color:white;" onclick="saveAndNew()">
+            <i class="fas fa-save"></i> نیا بل (Save & New)
+        </button>
+    </div>
+    <div style="height:20px;"></div>
+</div>
+
+<!-- PAGE SETTINGS -->
+<div id="page-settings" class="page">
+    <div class="report-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;">
+        <div class="report-card" style="background:var(--bg-app); padding:20px; border-radius:var(--radius); text-align:center; box-shadow:inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);">
+            <span class="report-val" id="todaySale" style="font-size:1.4rem; font-weight:bold; color:var(--primary); font-family:sans-serif;">0</span>
+            <span class="report-lbl" style="display:block; font-size:0.85rem; opacity:0.8;">آج کی سیل</span>
+        </div>
+        <div class="report-card" style="background:var(--bg-app); padding:20px; border-radius:var(--radius); text-align:center; box-shadow:inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);">
+            <span class="report-val" id="monthSale" style="font-size:1.4rem; font-weight:bold; color:#ff6f00; font-family:sans-serif;">0</span>
+            <span class="report-lbl" style="display:block; font-size:0.85rem; opacity:0.8;">اس ماہ کی سیل</span>
+        </div>
+    </div>
+
+    <div id="installBtn" onclick="installPWA()" class="settings-btn" style="display:none; color:var(--primary);">
+        <div><i class="fas fa-download" style="width:25px;"></i> ایپ انسٹال کریں</div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-profile')" class="settings-btn">
+        <div><i class="fas fa-store" style="width:25px;"></i> دکان کی تفصیل</div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-items')" class="settings-btn">
+        <div><i class="fas fa-plus-circle" style="width:25px;"></i> نیا مینیو آئٹم شامل کریں</div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-edit-menu')" class="settings-btn">
+        <div><i class="fas fa-edit" style="width:25px;"></i> مینو تبدیل کریں (Edit Menu)</div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <!-- NEW: CATEGORY MANAGEMENT BUTTON -->
+    <div onclick="openSubPage('sub-cats')" class="settings-btn">
+        <div><i class="fas fa-tags" style="width:25px;"></i> کیٹیگری مینجمنٹ</div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-history')" class="settings-btn">
+        <div><i class="fas fa-history" style="width:25px;"></i> پرانے بل</div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div onclick="openSubPage('sub-backup')" class="settings-btn">
+        <div><i class="fas fa-database" style="width:25px;"></i> بیک اپ / ریسٹور</div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+
+    <div onclick="resetAll()" class="settings-btn" style="color:var(--danger);">
+        <div><i class="fas fa-trash" style="width:25px;"></i> سارا ڈیٹا ڈیلیٹ کریں</div>
+    </div>
+</div>
+
+<!-- SUB PAGES -->
+<div id="sub-profile" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-profile')"><i class="fas fa-arrow-right"></i></button>
+        <h3>دکان کی پروفائل</h3>
+    </div>
+    <div class="card">
+        <input type="text" id="shopName" class="form-input" placeholder="دکان کا نام" oninput="saveShopDetails()">
+        <input type="text" id="shopTagline" class="form-input" placeholder="ٹیگ لائن (Slogan)" oninput="saveShopDetails()">
+        <input type="text" id="shopPhone" class="form-input" placeholder="فون نمبر" inputmode="tel" oninput="saveShopDetails()">
+        <input type="text" id="shopAddress" class="form-input" placeholder="پتہ" oninput="saveShopDetails()">
+        
+        <label style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:8px; display:block;">لوگو اپلوڈ کریں:</label>
+        <div class="file-upload-wrapper">
+            <label class="file-upload-box">
+                <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem; color:var(--primary);"></i>
+                <span style="font-size:0.9rem;">تصویر منتخب کریں (Click to Upload)</span>
+                <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(this)">
+            </label>
+            <div style="text-align:center;">
+                <img id="logoPreview" class="preview-img" alt="Preview">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NEW SUB PAGE: CATEGORY MANAGEMENT -->
+<div id="sub-cats" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-cats')"><i class="fas fa-arrow-right"></i></button>
+        <h3>کیٹیگری مینجمنٹ</h3>
+    </div>
+    <div class="card" style="display:flex; gap:10px;">
+        <input type="text" id="newCatName" class="form-input" placeholder="نئی کیٹیگری کا نام..." style="margin:0;">
+        <button class="btn-pop" onclick="addNewCategory()" style="width:auto; padding:0 20px; background:var(--primary); color:white;">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+    <div id="categoryListContainer" style="display:grid; gap:10px;"></div>
+</div>
+
+<div id="sub-items" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-items')"><i class="fas fa-arrow-right"></i></button>
+        <h3>نیا مینیو آئٹم شامل کریں</h3>
+    </div>
+
+    <div class="card">
+        <div style="position:relative;">
+            <input type="text" id="setName" class="form-input" placeholder="آئٹم کا نام" oninput="filterNameSuggestions(this.value)" autocomplete="off">
+            <div id="customNameList" class="custom-dropdown dropdown-down"></div>
+        </div>
+        
+        <div style="position:relative;">
+            <input type="text" id="setCat" class="form-input" placeholder="کیٹیگری (مثال: راشن)" 
+                   oninput="filterCategorySuggestions(this.value, 'customCatList', 'setCat')" 
+                   onfocus="filterCategorySuggestions('', 'customCatList', 'setCat')"
+                   autocomplete="off">
+            <div id="customCatList" class="custom-dropdown dropdown-up"></div>
+        </div>
+
+        <div style="display:flex; gap:15px;">
+            <input type="number" id="setPrice" class="form-input" placeholder="قیمت" inputmode="decimal">
+            <input type="number" id="setQty" class="form-input" placeholder="Qty" value="1" inputmode="numeric">
+        </div>
+        <button class="btn-pop" style="width:100%; color:var(--primary);" onclick="saveItem()">محفوظ کریں</button>
+    </div>
+</div>
+
+<div id="sub-edit-menu" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-edit-menu')"><i class="fas fa-arrow-right"></i></button>
+        <h3>مینو ایڈٹ کریں</h3>
+    </div>
+    <input type="text" id="searchEditMenu" class="form-input" placeholder="تلاش کریں..." oninput="renderEditMenu(this.value)">
+    <div id="editMenuList" style="display:grid; gap:10px;"></div>
+</div>
+
+<div id="sub-history" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-history')"><i class="fas fa-arrow-right"></i></button>
+        <h3>بلنگ ہسٹری</h3>
+    </div>
+    <div id="historyList"></div>
+</div>
+
+<div id="sub-backup" class="sub-page">
+    <div class="sub-header">
+        <button class="btn-back" onclick="closeSubPage('sub-backup')"><i class="fas fa-arrow-right"></i></button>
+        <h3>ڈیٹا بیک اپ</h3>
+    </div>
+    <div class="card">
+        <button class="btn-pop" style="width:100%; margin-bottom:15px; color:var(--primary);" onclick="backupData()">
+            <i class="fas fa-download"></i> ڈیٹا ڈاؤنلوڈ (Backup)
+        </button>
+        <input type="file" id="restoreFile" style="display:none;" accept=".json" onchange="restoreData(this)">
+        <button class="btn-pop" style="width:100%; color:#0277bd;" onclick="document.getElementById('restoreFile').click()">
+            <i class="fas fa-upload"></i> ڈیٹا واپس لائیں (Restore)
+        </button>
+    </div>
+</div>
+
+<!-- POPUPS -->
+<div class="popup-overlay" id="addPopup">
+    <div class="popup-box">
+        <div class="popup-title" id="popupItemName" style="font-weight:bold; margin-bottom:15px; color:var(--primary); font-size:1.1rem;">Item</div>
+        <div style="display:flex; gap:12px; margin-bottom:20px;">
+            <div style="flex:1;">
+                <label style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:5px;">مقدار (Qty)</label>
+                <input type="number" id="popupQty" class="form-input" style="margin:0; text-align:center;" inputmode="decimal" onfocus="this.select()" onkeydown="if(event.key === 'Enter') confirmAddToCart()">
+            </div>
+            <div style="flex:1;">
+                <label style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:5px;">قیمت</label>
+                <input type="number" id="popupPrice" class="form-input" style="margin:0; text-align:center;" inputmode="decimal" onfocus="this.select()" onkeydown="if(event.key === 'Enter') confirmAddToCart()">
+            </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="closePopup()" style="background:#eee; color:#333;">کینسل</button>
+            <button class="btn-pop" onclick="confirmAddToCart()" style="background:var(--primary); color:white; box-shadow:none;">شامل کریں</button>
+        </div>
+    </div>
+</div>
+
+<div class="popup-overlay" id="deletePopup">
+    <div class="popup-box">
+        <div style="color:var(--danger); font-size:2rem; margin-bottom:10px;"><i class="fas fa-trash"></i></div>
+        <p id="deleteItemName" style="margin-bottom:20px;">کیا آپ واقعی اسے ہٹانا چاہتے ہیں؟</p>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="document.getElementById('deletePopup').style.display='none'">نہیں</button>
+            <button class="btn-pop" style="background:var(--danger); color:white; box-shadow:none;" onclick="confirmDelete()">ہاں</button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT ITEM POPUP (For Database) -->
+<div class="popup-overlay" id="editDatabasePopup">
+    <div class="popup-box">
+        <div class="popup-title" style="font-weight:bold; margin-bottom:15px;">آئٹم تبدیل کریں</div>
+        <input type="hidden" id="editDbId">
+        <input type="text" id="editDbName" class="form-input" placeholder="نام">
+        
+        <div style="position:relative;">
+            <input type="text" id="editDbCat" class="form-input" placeholder="کیٹیگری" 
+                   oninput="filterCategorySuggestions(this.value, 'editDbCatList', 'editDbCat')" 
+                   onfocus="filterCategorySuggestions('', 'editDbCatList', 'editDbCat')" 
+                   autocomplete="off">
+            <div id="editDbCatList" class="custom-dropdown dropdown-up"></div>
+        </div>
+
+        <input type="number" id="editDbPrice" class="form-input" placeholder="قیمت">
+        
+        <div style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="deleteDatabaseItem()" style="background:#ffebee; color:red;">
+                <i class="fas fa-trash"></i>
+            </button>
+            <button class="btn-pop" onclick="saveDatabaseEdit()" style="background:var(--primary); color:white; box-shadow:none;">محفوظ کریں</button>
+        </div>
+        <button class="btn-pop" onclick="document.getElementById('editDatabasePopup').style.display='none'" style="margin-top:10px; background:#eee; padding:10px; font-size:0.8rem;">کینسل</button>
+    </div>
+</div>
+
+<!-- EDIT CATEGORY POPUP -->
+<div class="popup-overlay" id="editCatPopup">
+    <div class="popup-box">
+        <div class="popup-title" style="font-weight:bold; margin-bottom:15px;">کیٹیگری کا نام بدلیں</div>
+        <input type="hidden" id="oldCatName">
+        <input type="text" id="newCatEditName" class="form-input" placeholder="نیا نام...">
+        <div style="display:flex; gap:10px;">
+            <button class="btn-pop" onclick="document.getElementById('editCatPopup').style.display='none'" style="background:#eee; color:#333;">کینسل</button>
+            <button class="btn-pop" onclick="confirmEditCategory()" style="background:var(--primary); color:white; box-shadow:none;">محفوظ کریں</button>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item" onclick="switchPage('settings')"><i class="fas fa-cog"></i> سیٹنگز</div>
+    <div class="nav-item" onclick="switchPage('bill')"><i class="fas fa-receipt"></i> بل <div class="badge" id="cartBadge">0</div></div>
+    <div class="nav-item active" onclick="switchPage('shop')"><i class="fas fa-store"></i> دکان</div>
+</nav>
+
+<script>
+    // --- APP STATE ---
+    let items = [], cart = [], categories = [], activeCat = 'All', billId = 101;
+    let tempItem = null, deleteIndex = -1;
+    let editDbIndex = -1;
+    let currentTheme = localStorage.getItem('themeMode') || 'light';
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
+        
+        items = JSON.parse(localStorage.getItem('smartItems')) || getInitialItems();
+        // Load categories or default ones
+        categories = JSON.parse(localStorage.getItem('smartCategories')) || ["راشن", "مصالحہ جات", "پیکنگ", "صفائی", "دیگر"];
+        
+        billId = parseInt(localStorage.getItem('smartGlobalBillId')) || 101;
+        if(!localStorage.getItem('smartGlobalBillId')) localStorage.setItem('smartGlobalBillId', billId);
+        
+        const localDate = new Date().toLocaleDateString('en-CA'); 
+        document.getElementById('billDate').value = localDate;
+
+        loadShopDetails();
+        applyTheme();
+        renderShop();
+        renderHistory();
+        calculateReports();
+        updateUI();
+        
+        document.addEventListener('click', function(e) {
+            if(!e.target.closest('#setCat') && !e.target.closest('#customCatList')) document.getElementById('customCatList').style.display = 'none';
+            if(!e.target.closest('#setName') && !e.target.closest('#customNameList')) document.getElementById('customNameList').style.display = 'none';
+            if(!e.target.closest('#editDbCat') && !e.target.closest('#editDbCatList')) document.getElementById('editDbCatList').style.display = 'none';
+        });
+    };
+
+    function checkTheme() {
+        if(localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').classList.replace('fa-moon', 'fa-sun');
         }
-        .nav-item { 
-            position: relative; text-align: center; color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; width: 33%;
-            padding: 10px; border-radius: 15px; transition: 0.2s;
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        document.getElementById('themeIcon').classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('darkMode', isDark);
+    }
+
+    // --- THEME ---
+    function cycleTheme() {
+        if(currentTheme === 'light') currentTheme = 'dark';
+        else if(currentTheme === 'dark') currentTheme = 'auto';
+        else currentTheme = 'light';
+        localStorage.setItem('themeMode', currentTheme);
+        applyTheme();
+    }
+
+    function applyTheme() {
+        const body = document.body;
+        const icon = document.getElementById('themeIcon');
+        let isDark = false;
+        if(currentTheme === 'auto') { const h = new Date().getHours(); isDark = (h >= 19 || h < 6); } 
+        else { isDark = (currentTheme === 'dark'); }
+        if(isDark) body.classList.add('dark-mode'); else body.classList.remove('dark-mode');
+        if(currentTheme === 'light') icon.className = 'fas fa-sun';
+        else if(currentTheme === 'dark') icon.className = 'fas fa-moon';
+        else if(currentTheme === 'auto') icon.className = 'fas fa-magic';
+    }
+
+    // --- LOGO ---
+    function handleLogoUpload(input) {
+        const file = input.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64 = e.target.result;
+            localStorage.setItem('shopLogo', base64);
+            displayLogo(base64);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function displayLogo(base64) {
+        const imgBill = document.getElementById('billLogo');
+        const imgPreview = document.getElementById('logoPreview');
+        if(base64) {
+            imgBill.src = base64; imgBill.style.display = 'block';
+            imgPreview.src = base64; imgPreview.style.display = 'block';
+        } else {
+            imgBill.style.display = 'none'; imgPreview.style.display = 'none';
+        }
+    }
+
+    // --- CATEGORY MANAGEMENT ---
+    function renderCategoryManagement() {
+        const container = document.getElementById('categoryListContainer');
+        container.innerHTML = categories.map(c => `
+            <div class="settings-btn" style="margin-bottom:0; padding:12px;">
+                <div>${c}</div>
+                <div style="display:flex; gap:10px;">
+                    <i class="fas fa-pen" onclick="openEditCatPopup('${c}')" style="color:var(--primary); cursor:pointer;"></i>
+                    <i class="fas fa-trash" onclick="deleteCategory('${c}')" style="color:var(--danger); cursor:pointer;"></i>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function addNewCategory() {
+        const name = document.getElementById('newCatName').value.trim();
+        if(!name) return;
+        if(!categories.includes(name)) {
+            categories.push(name);
+            saveCategories();
+            document.getElementById('newCatName').value = '';
+            renderCategoryManagement();
+        }
+    }
+
+    function deleteCategory(name) {
+        if(confirm(`کیا آپ "${name}" کو ختم کرنا چاہتے ہیں؟ اس کیٹیگری کے آئٹمز "Uncategorized" ہو جائیں گے۔`)) {
+            categories = categories.filter(c => c !== name);
+            items.forEach(i => { if(i.cat === name) i.cat = 'Uncategorized'; });
+            localStorage.setItem('smartItems', JSON.stringify(items));
+            saveCategories();
+            renderCategoryManagement();
+        }
+    }
+
+    function openEditCatPopup(name) {
+        document.getElementById('oldCatName').value = name;
+        document.getElementById('newCatEditName').value = name;
+        document.getElementById('editCatPopup').style.display = 'flex';
+    }
+
+    function confirmEditCategory() {
+        const oldName = document.getElementById('oldCatName').value;
+        const newName = document.getElementById('newCatEditName').value.trim();
+        if(!newName || newName === oldName) return;
+        
+        const idx = categories.indexOf(oldName);
+        if(idx > -1) categories[idx] = newName;
+        
+        items.forEach(i => { if(i.cat === oldName) i.cat = newName; });
+        localStorage.setItem('smartItems', JSON.stringify(items));
+        
+        saveCategories();
+        document.getElementById('editCatPopup').style.display = 'none';
+        renderCategoryManagement();
+    }
+
+    function saveCategories() {
+        localStorage.setItem('smartCategories', JSON.stringify(categories));
+    }
+
+    // --- RENDER ENGINE ---
+    function renderShop() {
+        // Collect used cats + stored cats
+        const usedCats = [...new Set(items.map(i => i.cat))];
+        const allCats = [...new Set([...categories, ...usedCats])]; // Merge both
+        
+        if ((activeCat === 'All' || !allCats.includes(activeCat)) && allCats.length > 0) activeCat = allCats[0];
+
+        document.getElementById('catList').innerHTML = allCats.map(c => 
+            `<div class="cat-chip ${c===activeCat?'active':''}" onclick="setCat('${c}')">${c}</div>`
+        ).join('');
+
+        const filtered = items.filter(i => i.cat === activeCat);
+        document.getElementById('itemsGrid').innerHTML = filtered.map(i => `
+            <div class="item-card" onclick="openAddPopup(${i.id})">
+                <span class="item-name">${i.name}</span>
+                <span class="item-price">Rs ${i.price}</span>
+            </div>
+        `).join('');
+    }
+
+    // --- CATEGORY SUGGESTIONS ---
+    function filterCategorySuggestions(val, listId, inputId) {
+        // Use stored categories
+        let cats = [...categories];
+        if(val) cats = cats.filter(c => c.startsWith(val));
+        
+        const container = document.getElementById(listId);
+        // Always show if empty (full list) or match found
+        if(cats.length === 0) { container.style.display = 'none'; return; }
+
+        container.innerHTML = cats.map(c => {
+            let icon = '🏷️';
+            if(c.includes('مصالحہ')) icon = '🌶️';
+            else if(c.includes('راشن')) icon = '🍚';
+            else if(c.includes('پیکنگ')) icon = '📦';
+            return `<div class="dropdown-item" onclick="selectCatUniversal('${c}', '${listId}', '${inputId}')"><span>${icon}</span> ${c}</div>`;
+        }).join('');
+        container.style.display = 'block';
+    }
+
+    function selectCatUniversal(val, listId, inputId) {
+        document.getElementById(inputId).value = val;
+        document.getElementById(listId).style.display = 'none';
+    }
+
+    // --- ITEM NAME SUGGESTIONS ---
+    function filterNameSuggestions(val) {
+        const container = document.getElementById('customNameList');
+        if(!val) { container.style.display = 'none'; return; }
+        const matches = items.filter(i => i.name.toLowerCase().startsWith(val.toLowerCase()));
+        if(matches.length === 0) { container.style.display = 'none'; return; }
+
+        container.innerHTML = matches.map(i => `
+            <div class="dropdown-item" onclick="fillItemDetails('${i.name}', '${i.cat}', ${i.price})">
+                <span>⚡</span><div style="flex:1"><div>${i.name}</div><div style="font-size:0.75rem; color:#888;">${i.cat} - Rs ${i.price}</div></div>
+            </div>
+        `).join('');
+        container.style.display = 'block';
+    }
+
+    function fillItemDetails(name, cat, price) {
+        document.getElementById('setName').value = name;
+        document.getElementById('setCat').value = cat;
+        document.getElementById('setPrice').value = price;
+        document.getElementById('customNameList').style.display = 'none';
+    }
+
+    // --- EDIT MENU ---
+    function renderEditMenu(query = "") {
+        const container = document.getElementById('editMenuList');
+        let list = items;
+        if(query) list = items.filter(i => i.name.toLowerCase().includes(query.toLowerCase()));
+
+        container.innerHTML = list.map(i => `
+            <div class="settings-btn" style="margin-bottom:0; padding:12px;" onclick="openEditDatabasePopup(${i.id})">
+                <div><b>${i.name}</b><div style="font-size:0.8rem; color:var(--text-secondary);">${i.cat} | Rs ${i.price}</div></div>
+                <i class="fas fa-pen" style="font-size:0.8rem; color:var(--primary);"></i>
+            </div>
+        `).join('');
+    }
+
+    function openEditDatabasePopup(id) {
+        const item = items.find(i => i.id === id);
+        if(!item) return;
+        editDbIndex = items.findIndex(i => i.id === id);
+        document.getElementById('editDbId').value = item.id;
+        document.getElementById('editDbName').value = item.name;
+        document.getElementById('editDbCat').value = item.cat;
+        document.getElementById('editDbPrice').value = item.price;
+        document.getElementById('editDatabasePopup').style.display = 'flex';
+    }
+
+    function saveDatabaseEdit() {
+        if(editDbIndex === -1) return;
+        items[editDbIndex].name = document.getElementById('editDbName').value;
+        items[editDbIndex].cat = document.getElementById('editDbCat').value;
+        items[editDbIndex].price = parseFloat(document.getElementById('editDbPrice').value);
+        localStorage.setItem('smartItems', JSON.stringify(items));
+        document.getElementById('editDatabasePopup').style.display = 'none';
+        renderEditMenu(document.getElementById('searchEditMenu').value);
+        renderShop();
+    }
+
+    function deleteDatabaseItem() {
+        if(confirm("کیا آپ اس آئٹم کو ہمیشہ کے لیے ڈیلیٹ کرنا چاہتے ہیں؟")) {
+            items.splice(editDbIndex, 1);
+            localStorage.setItem('smartItems', JSON.stringify(items));
+            document.getElementById('editDatabasePopup').style.display = 'none';
+            renderEditMenu(document.getElementById('searchEditMenu').value);
+            renderShop();
+        }
+    }
+
+    // --- SHOP SEARCH ---
+    function filterItems() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const btn = document.getElementById('clearSearchBtn');
+        btn.style.display = query ? 'block' : 'none';
+        if(!query) { renderShop(); return; }
+        
+        const filtered = items.filter(i => i.name.toLowerCase().includes(query));
+        if(filtered.length === 0) { document.getElementById('itemsGrid').innerHTML = '<p style="width:100%; grid-column:1/-1; text-align:center; opacity:0.6; padding:20px;">کوئی آئٹم نہیں ملا</p>'; } 
+        else {
+            document.getElementById('itemsGrid').innerHTML = filtered.map(i => `
+                <div class="item-card" onclick="openAddPopup(${i.id})">
+                    <span class="item-name">${i.name}</span><span class="item-price">Rs ${i.price}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    function clearSearch() { document.getElementById('searchInput').value = ''; filterItems(); }
+    function setCat(c) { activeCat = c; document.getElementById('searchInput').value = ''; document.getElementById('clearSearchBtn').style.display = 'none'; renderShop(); }
+
+    // --- CART ---
+    function openAddPopup(id) {
+        tempItem = items.find(i => i.id === id); if(!tempItem) return;
+        document.getElementById('popupItemName').innerText = tempItem.name;
+        document.getElementById('popupPrice').value = tempItem.price;
+        document.getElementById('popupQty').value = tempItem.defQty || 1;
+        document.getElementById('addPopup').style.display = 'flex';
+        setTimeout(() => { document.getElementById('popupQty').focus(); document.getElementById('popupQty').select(); }, 50);
+    }
+
+    function confirmAddToCart() {
+        if(!tempItem) return;
+        const price = parseFloat(document.getElementById('popupPrice').value) || 0;
+        const qty = parseFloat(document.getElementById('popupQty').value) || 1;
+        const exists = cart.find(c => c.id === tempItem.id);
+        if(exists) { exists.price = price; exists.qty = qty; } 
+        else { cart.push({ id: tempItem.id, name: tempItem.name, price, qty }); }
+        closePopup(); calculateTotals(); updateBadge();
+        const badge = document.getElementById('cartBadge');
+        badge.classList.add('fa-bounce'); setTimeout(() => badge.classList.remove('fa-bounce'), 1000);
+    }
+
+    function calculateTotals() {
+        let subTotal = 0;
+        const tbody = document.getElementById('cartTableBody');
+        if(cart.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="padding:20px; text-align:center; opacity:0.5;">بل خالی ہے</td></tr>'; } 
+        else {
+            tbody.innerHTML = cart.map((c, idx) => {
+                const line = Math.round(c.price * c.qty); subTotal += line;
+                return `
+                <tr style="border-bottom:1px solid #f0f0f0;">
+                    <td style="text-align:right; font-weight:bold; padding:10px 2px;">${c.name} <div style="font-size:0.7rem; color:#888;">Rs ${c.price}</div></td>
+                    <td style="padding:5px; text-align:center;"><div style="display:inline-flex; align-items:center; background:#f5f7fa; border-radius:8px; padding:2px 5px;"><i class="fas fa-plus" onclick="changeQty(${idx}, 1)" style="font-size:0.8rem; padding:5px; cursor:pointer; color:var(--primary);"></i><span style="font-weight:bold; min-width:20px;">${c.qty}</span><i class="fas fa-minus" onclick="changeQty(${idx}, -1)" style="font-size:0.8rem; padding:5px; cursor:pointer; color:#777;"></i></div></td>
+                    <td style="padding:5px; text-align:right; font-weight:bold;">${line.toLocaleString()}</td>
+                    <td style="padding:5px; text-align:center;"><i class="fas fa-times" onclick="askDelete(${idx}, '${c.name}')" style="color:#e53935; cursor:pointer; opacity:0.6;"></i></td>
+                </tr>`;
+            }).join('');
+        }
+        const discount = parseFloat(document.getElementById('inpDiscount').value) || 0;
+        const delivery = parseFloat(document.getElementById('inpDelivery').value) || 0;
+        const grandTotal = Math.max(0, (subTotal - discount) + delivery);
+        document.getElementById('subTotalDisplay').innerText = subTotal.toLocaleString();
+        document.getElementById('rowDiscount').style.display = discount > 0 ? 'flex' : 'none';
+        document.getElementById('discountDisplay').innerText = discount.toLocaleString();
+        document.getElementById('rowDelivery').style.display = delivery > 0 ? 'flex' : 'none';
+        document.getElementById('deliveryDisplay').innerText = delivery.toLocaleString();
+        document.getElementById('grandTotal').innerText = grandTotal.toLocaleString();
+    }
+
+    function changeQty(idx, delta) {
+        if(cart[idx].qty + delta <= 0) { askDelete(idx, cart[idx].name); return; }
+        cart[idx].qty += delta; calculateTotals();
+    }
+
+    function askDelete(idx, name) { deleteIndex = idx; document.getElementById('deleteItemName').innerText = `${name} کو بل سے نکالیں؟`; document.getElementById('deletePopup').style.display = 'flex'; }
+    function confirmDelete() { if(deleteIndex > -1) { cart.splice(deleteIndex, 1); calculateTotals(); updateBadge(); } document.getElementById('deletePopup').style.display = 'none'; }
+    function closePopup() { document.getElementById('addPopup').style.display = 'none'; tempItem = null; }
+
+    // --- DATA SAVING ---
+    function autoSaveCurrentBill() {
+        if(cart.length === 0) return;
+        const history = JSON.parse(localStorage.getItem('smartHistory')) || [];
+        const currentID = parseInt(document.getElementById('billId').innerText);
+        const billObj = { id: currentID, date: document.getElementById('billDate').value, netTotal: document.getElementById('grandTotal').innerText, items: [...cart], discount: document.getElementById('inpDiscount').value, delivery: document.getElementById('inpDelivery').value };
+        const existingIdx = history.findIndex(h => h.id === currentID);
+        if(existingIdx > -1) history[existingIdx] = billObj;
+        else { history.unshift(billObj); let globalId = parseInt(localStorage.getItem('smartGlobalBillId')); if(currentID >= globalId) localStorage.setItem('smartGlobalBillId', currentID + 1); }
+        localStorage.setItem('smartHistory', JSON.stringify(history)); calculateReports();
+    }
+
+    function saveAndNew() {
+        if(cart.length > 0) autoSaveCurrentBill();
+        cart = []; billId = parseInt(localStorage.getItem('smartGlobalBillId'));
+        document.getElementById('inpDiscount').value = ''; document.getElementById('inpDelivery').value = '';
+        document.getElementById('billDate').value = new Date().toLocaleDateString('en-CA');
+        updateUI(); calculateTotals(); updateBadge(); renderHistory(); switchPage('shop');
+    }
+
+    // --- HISTORY ---
+    function renderHistory() {
+        const history = JSON.parse(localStorage.getItem('smartHistory')) || [];
+        const container = document.getElementById('historyList');
+        const currentId = parseInt(document.getElementById('billId').innerText);
+        if(history.length === 0) { container.innerHTML = '<p style="text-align:center; opacity:0.6;">کوئی ریکارڈ نہیں</p>'; return; }
+        container.innerHTML = history.map((h, idx) => `<div class="card" onclick="loadHistory(${idx})" style="display:flex; justify-content:space-between; padding:15px; cursor:pointer; ${h.id === currentId ? 'border:1px solid var(--primary);' : ''}"><div><b style="font-family:sans-serif;">Bill #${h.id}</b><br><small style="color:var(--text-secondary); font-family:sans-serif;">${h.date}</small></div><div style="font-weight:bold; font-family:sans-serif;">Rs ${h.netTotal}</div></div>`).join('');
+    }
+
+    function loadHistory(index) {
+        autoSaveCurrentBill(); const history = JSON.parse(localStorage.getItem('smartHistory')); const rec = history[index];
+        cart = [...rec.items]; billId = rec.id;
+        document.getElementById('inpDiscount').value = rec.discount || ""; document.getElementById('inpDelivery').value = rec.delivery || ""; document.getElementById('billDate').value = rec.date;
+        updateUI(); calculateTotals(); updateBadge(); closeSubPage('sub-history'); switchPage('bill');
+    }
+
+    function calculateReports() {
+        const history = JSON.parse(localStorage.getItem('smartHistory')) || [];
+        const todayStr = new Date().toLocaleDateString('en-CA'); const currentMonth = new Date().getMonth();
+        let todayTotal = 0, monthTotal = 0;
+        history.forEach(h => {
+            let amount = parseFloat(h.netTotal.toString().replace(/,/g, '')); if(isNaN(amount)) amount = 0;
+            if(h.date === todayStr) todayTotal += amount; if(new Date(h.date).getMonth() === currentMonth) monthTotal += amount;
+        });
+        document.getElementById('todaySale').innerText = todayTotal.toLocaleString(); document.getElementById('monthSale').innerText = monthTotal.toLocaleString();
+    }
+
+    // --- NAVIGATION ---
+    function updateUI() { document.getElementById('billId').innerText = billId; document.getElementById('printBillId').innerText = billId; document.getElementById('printDate').innerText = document.getElementById('billDate').value; }
+    
+    function switchPage(p) {
+        document.querySelectorAll('.page').forEach(e => e.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+        document.getElementById('page-'+p).classList.add('active');
+        const navs = document.querySelectorAll('.nav-item');
+        if(p==='settings') { navs[0].classList.add('active'); calculateReports(); } else if(p==='bill') { navs[1].classList.add('active'); calculateTotals(); } else if(p==='shop') navs[2].classList.add('active');
+    }
+
+    function openSubPage(id) { 
+        document.getElementById(id).style.display = 'block'; 
+        if(id === 'sub-edit-menu') renderEditMenu(); 
+        if(id === 'sub-cats') renderCategoryManagement();
+    }
+    function closeSubPage(id) { document.getElementById(id).style.display = 'none'; if(id==='sub-items' || id==='sub-edit-menu' || id==='sub-cats') renderShop(); }
+    function updateBadge() { const b = document.getElementById('cartBadge'); b.style.display = cart.length ? 'flex' : 'none'; b.innerText = cart.length; }
+    function updateDateDisplay() { document.getElementById('printDate').innerText = document.getElementById('billDate').value; }
+
+    // --- ADD NEW ITEM ---
+    function saveItem() {
+        const name = document.getElementById('setName').value.trim(); const cat = document.getElementById('setCat').value.trim(); const price = parseFloat(document.getElementById('setPrice').value);
+        if(!name || !cat || isNaN(price)) return alert("برائے مہربانی مکمل تفصیلات درج کریں");
+        items.push({ id: Date.now(), name, cat, price, defQty: 1 });
+        localStorage.setItem('smartItems', JSON.stringify(items));
+        // Add new category if not exists
+        if(!categories.includes(cat)) { categories.push(cat); saveCategories(); }
+        alert("آئٹم محفوظ ہو گیا!"); document.getElementById('setName').value = ''; document.getElementById('setPrice').value = ''; renderShop(); closeSubPage('sub-items');
+    }
+
+    // --- PROFILE ---
+    function saveShopDetails() {
+        const details = { name: document.getElementById('shopName').value, tagline: document.getElementById('shopTagline').value, phone: document.getElementById('shopPhone').value, address: document.getElementById('shopAddress').value };
+        localStorage.setItem('shopDetails', JSON.stringify(details)); applyShopDetails(details);
+    }
+    function loadShopDetails() {
+        const d = JSON.parse(localStorage.getItem('shopDetails')) || {name: "ہوٹل کا نام", tagline: "", phone: "", address: ""};
+        document.getElementById('shopName').value = d.name; document.getElementById('shopTagline').value = d.tagline; document.getElementById('shopPhone').value = d.phone; document.getElementById('shopAddress').value = d.address;
+        const logo = localStorage.getItem('shopLogo'); displayLogo(logo); applyShopDetails(d);
+    }
+    function applyShopDetails(d) {
+        document.getElementById('printShopName').innerText = d.name || "ہوٹل کا نام"; document.getElementById('printTagline').innerText = d.tagline || ""; document.getElementById('printContact').innerText = d.phone || ""; document.getElementById('printAddress').innerText = d.address || "";
+    }
+
+    // --- ACTIONS ---
+    function printBill() { window.print(); }
+    async function shareBillPDF() {
+        if(cart.length === 0) return alert("بل خالی ہے!");
+        const element = document.getElementById('invoice-area');
+        const opt = { margin: 5, filename: `Bill-${billId}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+        const btn = event.currentTarget; const oldHtml = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Wait...';
+        try { if (navigator.share) { const pdfBlob = await html2pdf().from(element).set(opt).output('blob'); const file = new File([pdfBlob], `Bill-${billId}.pdf`, { type: 'application/pdf' }); await navigator.share({ files: [file], title: `Bill #${billId}` }); } else { html2pdf().from(element).set(opt).save(); } } catch(e) { console.error(e); alert("PDF Error"); } finally { btn.innerHTML = oldHtml; }
+    }
+    function shareWhatsApp() {
+        if(!cart.length) return alert("Empty");
+        let t = `*${document.getElementById('printShopName').innerText}*\n`;
+        t += `بل: ${billId}\nتاریخ: ${document.getElementById('billDate').value}\n\n`;
+        cart.forEach(c => t += `${c.name} (${c.qty} x ${c.price}) = ${c.qty*c.price}\n`);
+        t += `\n*ٹوٹل: ${document.getElementById('grandTotal').innerText}*`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(t)}`, '_blank');
+    }
+
+    // --- BACKUP ---
+    function backupData() {
+        const data = {}; for(let key in localStorage) { if(key.startsWith('smart') || key === 'shopDetails' || key === 'shopLogo') data[key] = localStorage.getItem(key); }
+        const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type: 'application/json'})); a.download = `Backup_${new Date().toISOString().split('T')[0]}.json`; a.click();
+    }
+    function restoreData(input) {
+        const file = input.files[0]; if(!file) return; const reader = new FileReader();
+        reader.onload = function(e) { try { const data = JSON.parse(e.target.result); for(let key in data) localStorage.setItem(key, data[key]); alert("ڈیٹا بحال ہو گیا!"); location.reload(); } catch(err) { alert("فائل خراب ہے"); } };
+        reader.readAsText(file);
+    }
+    function resetAll() { if(confirm("کیا آپ واقعی سب کچھ ڈیلیٹ کرنا چاہتے ہیں؟")) { localStorage.clear(); location.reload(); } }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBtn').style.display = 'flex'; });
+    async function installPWA() { if(!deferredPrompt) return; deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if(outcome === 'accepted') document.getElementById('installBtn').style.display = 'none'; deferredPrompt = null; }
+    function getInitialItems() { return [{ id: 101, name: "زیرہ", cat: "مصالحہ جات", price: 50, defQty: 1 }, { id: 102, name: "خشک دھنیا", cat: "مصالحہ جات", price: 40, defQty: 1 }, { id: 103, name: "کالی مرچ", cat: "مصالحہ جات", price: 80, defQty: 1 }, { id: 201, name: "دال چنا", cat: "راشن", price: 250, defQty: 1 }, { id: 203, name: "چینی", cat: "راشن", price: 140, defQty: 1 }, { id: 204, name: "آئل (Oil)", cat: "راشن", price: 500, defQty: 1 }, { id: 303, name: "شاپر 7 انچ", cat: "پیکنگ", price: 200, defQty: 1 }, { id: 304, name: "شاپر 6 انچ", cat: "پیکنگ", price: 180, defQty: 1 }, { id: 401, name: "صابن", cat: "صفائی", price: 80, defQty: 1 }, { id: 405, name: "سرف", cat: "صفائی", price: 50, defQty: 1 }, { id: 501, name: "ٹشو", cat: "دیگر", price: 50, defQty: 1 }, { id: 503, name: "ڈسپوزیبل گلاس", cat: "دیگر", price: 3, defQty: 1 }]; }
+</script>
+</body>
+    </html>padding: 10px; border-radius: 15px; transition: 0.2s;
         }
         .nav-item i { font-size: 1.4rem; margin-bottom: 4px; display: block; }
         .nav-item.active { 
